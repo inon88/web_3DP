@@ -1,0 +1,1229 @@
+{
+  "compileMs": 19.3482,
+  "results": [
+    {
+      "example": "articulated_cube_keychain.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 39.66,
+      "render": 219.11669999999998,
+      "bytes": 469884,
+      "triangles": 9396,
+      "log": [
+        "Total rendering time: 0:00:00.130",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      17",
+        "   Vertices:     4666",
+        "   Facets:       9396"
+      ],
+      "total": 274.8257
+    },
+    {
+      "example": "articulated_cube_keychain.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 12.061599999999999,
+      "render": 12450.329600000001,
+      "bytes": 456084,
+      "triangles": 9120,
+      "log": [
+        "   Vertices:     4528",
+        "   Halfedges:   13776",
+        "   Edges:        6888",
+        "   Halffacets:   4862",
+        "   Facets:       2431",
+        "   Volumes:        22"
+      ],
+      "total": 12476.4698
+    },
+    {
+      "example": "articulated_cube_keychain.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 12.250300000001516,
+      "render": 138.22440000000097,
+      "bytes": 469884,
+      "triangles": 9396,
+      "log": [
+        "Total rendering time: 0:00:00.102",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      17",
+        "   Vertices:     4666",
+        "   Facets:       9396"
+      ],
+      "total": 167.90660000000025
+    },
+    {
+      "example": "articulated_cube_keychain.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 13.832899999999427,
+      "render": 306.2355000000007,
+      "bytes": 2070084,
+      "triangles": 41400,
+      "log": [
+        "Total rendering time: 0:00:00.273",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      17",
+        "   Vertices:    20668",
+        "   Facets:      41400"
+      ],
+      "total": 335.2677999999996
+    },
+    {
+      "example": "articulated_name.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 11.91530000000057,
+      "render": 246.95190000000002,
+      "bytes": 80184,
+      "triangles": 1602,
+      "log": [
+        "Total rendering time: 0:00:00.029",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      1",
+        "   Vertices:      801",
+        "   Facets:       1602"
+      ],
+      "total": 271.9539999999997
+    },
+    {
+      "example": "articulated_name.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 12.6895999999997,
+      "render": 2639.2186,
+      "bytes": 74984,
+      "triangles": 1498,
+      "log": [
+        "   Vertices:      749",
+        "   Halfedges:    2352",
+        "   Edges:        1176",
+        "   Halffacets:    880",
+        "   Facets:        440",
+        "   Volumes:         5"
+      ],
+      "total": 2665.068300000001
+    },
+    {
+      "example": "articulated_name.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.599500000000262,
+      "render": 231.54549999999836,
+      "bytes": 80184,
+      "triangles": 1602,
+      "log": [
+        "Total rendering time: 0:00:00.029",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      1",
+        "   Vertices:      801",
+        "   Facets:       1602"
+      ],
+      "total": 256.5151999999998
+    },
+    {
+      "example": "articulated_name.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.604999999999563,
+      "render": 342.0086999999985,
+      "bytes": 467884,
+      "triangles": 9356,
+      "log": [
+        "Total rendering time: 0:00:00.122",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      1",
+        "   Vertices:     4678",
+        "   Facets:       9356"
+      ],
+      "total": 366.57760000000053
+    },
+    {
+      "example": "articulated_name_clicker.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 11.467000000000553,
+      "render": 70.71380000000136,
+      "bytes": 116584,
+      "triangles": 2330,
+      "log": [
+        "Total rendering time: 0:00:00.030",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -3",
+        "   Vertices:     1173",
+        "   Facets:       2330"
+      ],
+      "total": 95.27360000000044
+    },
+    {
+      "example": "articulated_name_clicker.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 14.236000000000786,
+      "render": 3520.3289000000004,
+      "bytes": 113584,
+      "triangles": 2270,
+      "log": [
+        "   Vertices:     1143",
+        "   Halfedges:    3634",
+        "   Edges:        1817",
+        "   Halffacets:   1430",
+        "   Facets:        715",
+        "   Volumes:         9"
+      ],
+      "total": 3553.509900000001
+    },
+    {
+      "example": "articulated_name_clicker.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.370599999998376,
+      "render": 68.1839,
+      "bytes": 116584,
+      "triangles": 2330,
+      "log": [
+        "Total rendering time: 0:00:00.030",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -3",
+        "   Vertices:     1173",
+        "   Facets:       2330"
+      ],
+      "total": 93.81600000000253
+    },
+    {
+      "example": "articulated_name_clicker.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.967100000001665,
+      "render": 159.02930000000197,
+      "bytes": 548884,
+      "triangles": 10976,
+      "log": [
+        "Total rendering time: 0:00:00.119",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -3",
+        "   Vertices:     5496",
+        "   Facets:      10976"
+      ],
+      "total": 184.4767000000029
+    },
+    {
+      "example": "bracket.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 11.741699999998673,
+      "render": 6.69970000000103,
+      "bytes": 13884,
+      "triangles": 276,
+      "log": [
+        "Total rendering time: 0:00:00.003",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      2",
+        "   Vertices:      136",
+        "   Facets:        276"
+      ],
+      "total": 31.45140000000174
+    },
+    {
+      "example": "bracket.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 11.606799999997747,
+      "render": 115.28229999999894,
+      "bytes": 13884,
+      "triangles": 276,
+      "log": [
+        "   Vertices:      136",
+        "   Halfedges:     408",
+        "   Edges:         204",
+        "   Halffacets:    140",
+        "   Facets:         70",
+        "   Volumes:         2"
+      ],
+      "total": 139.48790000000008
+    },
+    {
+      "example": "bracket.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.792599999997037,
+      "render": 6.929700000000594,
+      "bytes": 13884,
+      "triangles": 276,
+      "log": [
+        "Total rendering time: 0:00:00.003",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      2",
+        "   Vertices:      136",
+        "   Facets:        276"
+      ],
+      "total": 32.12459999999919
+    },
+    {
+      "example": "bracket.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 12.355499999997846,
+      "render": 7.452100000002247,
+      "bytes": 13884,
+      "triangles": 276,
+      "log": [
+        "Total rendering time: 0:00:00.004",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      2",
+        "   Vertices:      136",
+        "   Facets:        276"
+      ],
+      "total": 34.56169999999838
+    },
+    {
+      "example": "c_decorativeLatter.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 14.520300000000134,
+      "render": 10.235000000000582,
+      "bytes": 15084,
+      "triangles": 300,
+      "log": [
+        "CGAL Polyhedrons in cache: 0",
+        "CGAL cache size in bytes: 0",
+        "Total rendering time: 0:00:00.005",
+        "Top level object is a 3D object (PolySet):",
+        "   Convex:       no",
+        "   Triangles:    300"
+      ],
+      "total": 39.10570000000007
+    },
+    {
+      "example": "c_decorativeLatter.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 12.736699999997654,
+      "render": 11.442299999998795,
+      "bytes": 15084,
+      "triangles": 300,
+      "log": [
+        "CGAL Polyhedrons in cache: 0",
+        "CGAL cache size in bytes: 0",
+        "Total rendering time: 0:00:00.006",
+        "Top level object is a 3D object (PolySet):",
+        "   Convex:       no",
+        "   Triangles:    300"
+      ],
+      "total": 38.48319999999876
+    },
+    {
+      "example": "c_decorativeLatter.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.555000000000291,
+      "render": 11.756599999996979,
+      "bytes": 15084,
+      "triangles": 300,
+      "log": [
+        "CGAL Polyhedrons in cache: 0",
+        "CGAL cache size in bytes: 0",
+        "Total rendering time: 0:00:00.006",
+        "Top level object is a 3D object (PolySet):",
+        "   Convex:       no",
+        "   Triangles:    300"
+      ],
+      "total": 36.72700000000259
+    },
+    {
+      "example": "c_decorativeLatter.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.934900000000198,
+      "render": 12.502099999997881,
+      "bytes": 96884,
+      "triangles": 1936,
+      "log": [
+        "CGAL Polyhedrons in cache: 0",
+        "CGAL cache size in bytes: 0",
+        "Total rendering time: 0:00:00.008",
+        "Top level object is a 3D object (PolySet):",
+        "   Convex:       no",
+        "   Triangles:   1936"
+      ],
+      "total": 38.19870000000083
+    },
+    {
+      "example": "c_hex_tray.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 13.563799999999901,
+      "render": 67.30630000000019,
+      "bytes": 192284,
+      "triangles": 3844,
+      "log": [
+        "Total rendering time: 0:00:00.058",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      96",
+        "   Vertices:     1732",
+        "   Facets:       3844"
+      ],
+      "total": 96.08220000000074
+    },
+    {
+      "example": "c_hex_tray.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 10.797699999999168,
+      "render": 5553.422999999999,
+      "bytes": 190684,
+      "triangles": 3812,
+      "log": [
+        "   Vertices:     1716",
+        "   Halfedges:    5308",
+        "   Edges:        2654",
+        "   Halffacets:   1886",
+        "   Facets:        943",
+        "   Volumes:         2"
+      ],
+      "total": 5577.315300000002
+    },
+    {
+      "example": "c_hex_tray.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.067900000001828,
+      "render": 66.82240000000093,
+      "bytes": 192284,
+      "triangles": 3844,
+      "log": [
+        "Total rendering time: 0:00:00.058",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      96",
+        "   Vertices:     1732",
+        "   Facets:       3844"
+      ],
+      "total": 91.83100000000195
+    },
+    {
+      "example": "c_hex_tray.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.265799999997398,
+      "render": 117.97820000000138,
+      "bytes": 566684,
+      "triangles": 11332,
+      "log": [
+        "Total rendering time: 0:00:00.109",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      96",
+        "   Vertices:     5476",
+        "   Facets:      11332"
+      ],
+      "total": 143.1834000000017
+    },
+    {
+      "example": "c_keycaps.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 11.850200000000768,
+      "render": 19.251099999997678,
+      "bytes": 47884,
+      "triangles": 956,
+      "log": [
+        "Total rendering time: 0:00:00.014",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      4",
+        "   Vertices:      472",
+        "   Facets:        956"
+      ],
+      "total": 44.57150000000183
+    },
+    {
+      "example": "c_keycaps.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 13.553800000001502,
+      "render": 503.2983000000022,
+      "bytes": 45484,
+      "triangles": 908,
+      "log": [
+        "   Vertices:      450",
+        "   Halfedges:    1440",
+        "   Edges:         720",
+        "   Halffacets:    548",
+        "   Facets:        274",
+        "   Volumes:         2"
+      ],
+      "total": 530.8368999999984
+    },
+    {
+      "example": "c_keycaps.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.195700000000215,
+      "render": 20.53899999999703,
+      "bytes": 47884,
+      "triangles": 956,
+      "log": [
+        "Total rendering time: 0:00:00.014",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      4",
+        "   Vertices:      472",
+        "   Facets:        956"
+      ],
+      "total": 52.099200000000565
+    },
+    {
+      "example": "c_keycaps.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 13.71820000000298,
+      "render": 115.42809999999736,
+      "bytes": 962884,
+      "triangles": 19256,
+      "log": [
+        "Total rendering time: 0:00:00.108",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      0",
+        "   Vertices:     9630",
+        "   Facets:      19256"
+      ],
+      "total": 146.7584999999999
+    },
+    {
+      "example": "C_keychain.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 12.000099999997474,
+      "render": 58.26789999999892,
+      "bytes": 189884,
+      "triangles": 3796,
+      "log": [
+        "Total rendering time: 0:00:00.043",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      10",
+        "   Vertices:     1880",
+        "   Facets:       3796"
+      ],
+      "total": 83.54360000000088
+    },
+    {
+      "example": "C_keychain.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 10.851900000001478,
+      "render": 6712.934099999999,
+      "bytes": 187684,
+      "triangles": 3752,
+      "log": [
+        "   Vertices:     1858",
+        "   Halfedges:    5574",
+        "   Edges:        2787",
+        "   Halffacets:   1906",
+        "   Facets:        953",
+        "   Volumes:         4"
+      ],
+      "total": 6737.228499999997
+    },
+    {
+      "example": "C_keychain.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.902399999999034,
+      "render": 62.43130000000383,
+      "bytes": 189884,
+      "triangles": 3796,
+      "log": [
+        "Total rendering time: 0:00:00.046",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      10",
+        "   Vertices:     1880",
+        "   Facets:       3796"
+      ],
+      "total": 88.08469999999943
+    },
+    {
+      "example": "C_keychain.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.567000000002736,
+      "render": 275.6634000000049,
+      "bytes": 954984,
+      "triangles": 19098,
+      "log": [
+        "Total rendering time: 0:00:00.261",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      11",
+        "   Vertices:     9529",
+        "   Facets:      19098"
+      ],
+      "total": 302.29209999999875
+    },
+    {
+      "example": "c_tray_organizer.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 13.508499999996275,
+      "render": 44.63379999999597,
+      "bytes": 164484,
+      "triangles": 3288,
+      "log": [
+        "Total rendering time: 0:00:00.037",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -9",
+        "   Vertices:     1664",
+        "   Facets:       3288"
+      ],
+      "total": 73.18019999999524
+    },
+    {
+      "example": "c_tray_organizer.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 12.268700000000536,
+      "render": 4046.0160000000033,
+      "bytes": 164284,
+      "triangles": 3284,
+      "log": [
+        "   Vertices:     1662",
+        "   Halfedges:    4986",
+        "   Edges:        2493",
+        "   Halffacets:   1772",
+        "   Facets:        886",
+        "   Volumes:        15"
+      ],
+      "total": 4071.968700000005
+    },
+    {
+      "example": "c_tray_organizer.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.1846000000005,
+      "render": 42.15389999999752,
+      "bytes": 164484,
+      "triangles": 3288,
+      "log": [
+        "Total rendering time: 0:00:00.034",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -9",
+        "   Vertices:     1664",
+        "   Facets:       3288"
+      ],
+      "total": 67.11849999999686
+    },
+    {
+      "example": "c_tray_organizer.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.114699999998265,
+      "render": 98.30719999999565,
+      "bytes": 661284,
+      "triangles": 13224,
+      "log": [
+        "Total rendering time: 0:00:00.092",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -9",
+        "   Vertices:     6632",
+        "   Facets:      13224"
+      ],
+      "total": 123.01629999999568
+    },
+    {
+      "example": "decorated_font.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 10.81420000000071,
+      "render": 117.36250000000291,
+      "bytes": 465784,
+      "triangles": 9314,
+      "log": [
+        "Total rendering time: 0:00:00.093",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      0",
+        "   Vertices:     4659",
+        "   Facets:       9314"
+      ],
+      "total": 141.22819999999774
+    },
+    {
+      "example": "decorated_font.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 12.435299999997369,
+      "render": 15502.368600000002,
+      "bytes": 464884,
+      "triangles": 9296,
+      "log": [
+        "   Vertices:     4650",
+        "   Halfedges:   13980",
+        "   Edges:        6990",
+        "   Halffacets:   4822",
+        "   Facets:       2411",
+        "   Volumes:         5"
+      ],
+      "total": 15528.830000000002
+    },
+    {
+      "example": "decorated_font.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.303399999997055,
+      "render": 117.95190000000002,
+      "bytes": 465784,
+      "triangles": 9314,
+      "log": [
+        "Total rendering time: 0:00:00.096",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      0",
+        "   Vertices:     4659",
+        "   Facets:       9314"
+      ],
+      "total": 143.4184000000023
+    },
+    {
+      "example": "decorated_font.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.317300000002433,
+      "render": 593.2417999999961,
+      "bytes": 2877784,
+      "triangles": 57554,
+      "log": [
+        "Total rendering time: 0:00:00.569",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      0",
+        "   Vertices:    28779",
+        "   Facets:      57554"
+      ],
+      "total": 618.7133000000031
+    },
+    {
+      "example": "default_name_keychain.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 11.391700000000128,
+      "render": 25.06880000000092,
+      "bytes": 114184,
+      "triangles": 2282,
+      "log": [
+        "Total rendering time: 0:00:00.014",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      1",
+        "   Vertices:     1141",
+        "   Facets:       2282"
+      ],
+      "total": 49.902399999999034
+    },
+    {
+      "example": "default_name_keychain.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 11.639499999997497,
+      "render": 4116.925900000002,
+      "bytes": 114084,
+      "triangles": 2280,
+      "log": [
+        "   Vertices:     1140",
+        "   Halfedges:    3420",
+        "   Edges:        1710",
+        "   Halffacets:   1176",
+        "   Facets:        588",
+        "   Volumes:         2"
+      ],
+      "total": 4141.323599999996
+    },
+    {
+      "example": "default_name_keychain.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.382099999995262,
+      "render": 24.950199999999313,
+      "bytes": 114184,
+      "triangles": 2282,
+      "log": [
+        "Total rendering time: 0:00:00.014",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      1",
+        "   Vertices:     1141",
+        "   Facets:       2282"
+      ],
+      "total": 49.583999999995285
+    },
+    {
+      "example": "default_name_keychain.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 10.746400000003632,
+      "render": 132.76380000000063,
+      "bytes": 771184,
+      "triangles": 15422,
+      "log": [
+        "Total rendering time: 0:00:00.122",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      1",
+        "   Vertices:     7711",
+        "   Facets:      15422"
+      ],
+      "total": 156.61349999999948
+    },
+    {
+      "example": "filament_painting.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 11.495300000002317,
+      "render": 87.36639999999898,
+      "bytes": 346184,
+      "triangles": 6922,
+      "log": [
+        "Total rendering time: 0:00:00.081",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -1",
+        "   Vertices:     3465",
+        "   Facets:       6922"
+      ],
+      "total": 110.89010000000417
+    },
+    {
+      "example": "filament_painting.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 11.07270000000426,
+      "render": 20073.641899999995,
+      "bytes": 239984,
+      "triangles": 4798,
+      "log": [
+        "   Vertices:     2401",
+        "   Halfedges:   13464",
+        "   Edges:        6732",
+        "   Halffacets:   8668",
+        "   Facets:       4334",
+        "   Volumes:         2"
+      ],
+      "total": 20098.041599999997
+    },
+    {
+      "example": "filament_painting.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.295299999997951,
+      "render": 89.24739999999292,
+      "bytes": 346184,
+      "triangles": 6922,
+      "log": [
+        "Total rendering time: 0:00:00.083",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -1",
+        "   Vertices:     3465",
+        "   Facets:       6922"
+      ],
+      "total": 114.98889999999665
+    },
+    {
+      "example": "filament_painting.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.313099999999395,
+      "render": 88.91470000000845,
+      "bytes": 346184,
+      "triangles": 6922,
+      "log": [
+        "Total rendering time: 0:00:00.082",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -1",
+        "   Vertices:     3465",
+        "   Facets:       6922"
+      ],
+      "total": 114.45579999999609
+    },
+    {
+      "example": "Name_zigzag.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 11.400599999993574,
+      "render": 48.77030000000377,
+      "bytes": 123484,
+      "triangles": 2468,
+      "log": [
+        "Total rendering time: 0:00:00.036",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      1",
+        "   Vertices:     1234",
+        "   Facets:       2468"
+      ],
+      "total": 77.28630000000703
+    },
+    {
+      "example": "Name_zigzag.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 12.236900000003516,
+      "render": 5356.803700000004,
+      "bytes": 104484,
+      "triangles": 2088,
+      "log": [
+        "   Vertices:     1052",
+        "   Halfedges:    3164",
+        "   Edges:        1582",
+        "   Halffacets:   1068",
+        "   Facets:        534",
+        "   Volumes:         2"
+      ],
+      "total": 5383.771200000003
+    },
+    {
+      "example": "Name_zigzag.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 12.669000000008964,
+      "render": 48.55000000000291,
+      "bytes": 123484,
+      "triangles": 2468,
+      "log": [
+        "Total rendering time: 0:00:00.036",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      1",
+        "   Vertices:     1234",
+        "   Facets:       2468"
+      ],
+      "total": 78.97960000000603
+    },
+    {
+      "example": "Name_zigzag.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 13.037200000006123,
+      "render": 449.51530000001367,
+      "bytes": 723684,
+      "triangles": 14472,
+      "log": [
+        "Total rendering time: 0:00:00.437",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      1",
+        "   Vertices:     7236",
+        "   Facets:      14472"
+      ],
+      "total": 477.4953000000096
+    },
+    {
+      "example": "Name_zigzag_multi.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 10.96600000000035,
+      "render": 136.5054999999993,
+      "bytes": 402684,
+      "triangles": 8052,
+      "log": [
+        "Total rendering time: 0:00:00.107",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      3",
+        "   Vertices:     4022",
+        "   Facets:       8052"
+      ],
+      "total": 160.4210999999923
+    },
+    {
+      "example": "Name_zigzag_multi.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 10.790599999992992,
+      "render": 27878.46239999999,
+      "bytes": 358484,
+      "triangles": 7168,
+      "log": [
+        "   Vertices:     3625",
+        "   Halfedges:   10884",
+        "   Edges:        5442",
+        "   Halffacets:   3658",
+        "   Facets:       1829",
+        "   Volumes:         5"
+      ],
+      "total": 27902.425300000003
+    },
+    {
+      "example": "Name_zigzag_multi.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.59100000000035,
+      "render": 146.9302999999927,
+      "bytes": 402684,
+      "triangles": 8052,
+      "log": [
+        "Total rendering time: 0:00:00.115",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      3",
+        "   Vertices:     4022",
+        "   Facets:       8052"
+      ],
+      "total": 179.49130000000878
+    },
+    {
+      "example": "Name_zigzag_multi.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 13.487000000008265,
+      "render": 1573.0065999999933,
+      "bytes": 2384384,
+      "triangles": 47686,
+      "log": [
+        "Total rendering time: 0:00:01.544",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      3",
+        "   Vertices:    23839",
+        "   Facets:      47686"
+      ],
+      "total": 1600.5091000000102
+    },
+    {
+      "example": "pet-bowl/pet_bowl_customizer.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 10.767100000011851,
+      "render": 25.887900000001537,
+      "bytes": 61984,
+      "triangles": 1238,
+      "log": [
+        "Total rendering time: 0:00:00.017",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      4",
+        "   Vertices:      613",
+        "   Facets:       1238"
+      ],
+      "total": 48.572000000000116
+    },
+    {
+      "example": "pet-bowl/pet_bowl_customizer.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 10.983500000002095,
+      "render": 781.8589000000065,
+      "bytes": 69784,
+      "triangles": 1394,
+      "log": [
+        "   Vertices:      691",
+        "   Halfedges:    3096",
+        "   Edges:        1548",
+        "   Halffacets:   1714",
+        "   Facets:        857",
+        "   Volumes:         2"
+      ],
+      "total": 809.6509000000078
+    },
+    {
+      "example": "pet-bowl/pet_bowl_customizer.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.121199999994133,
+      "render": 21.192399999999907,
+      "bytes": 61984,
+      "triangles": 1238,
+      "log": [
+        "Total rendering time: 0:00:00.014",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      4",
+        "   Vertices:      613",
+        "   Facets:       1238"
+      ],
+      "total": 44.887100000007194
+    },
+    {
+      "example": "pet-bowl/pet_bowl_customizer.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 12.80580000000191,
+      "render": 56.87020000000484,
+      "bytes": 499984,
+      "triangles": 9998,
+      "log": [
+        "Total rendering time: 0:00:00.050",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      4",
+        "   Vertices:     4993",
+        "   Facets:       9998"
+      ],
+      "total": 82.43519999999262
+    },
+    {
+      "example": "pet_bowl_stand.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 11.408200000005309,
+      "render": 82.61220000000321,
+      "bytes": 334684,
+      "triangles": 6692,
+      "log": [
+        "Total rendering time: 0:00:00.065",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -6",
+        "   Vertices:     3360",
+        "   Facets:       6692"
+      ],
+      "total": 106.70309999999881
+    },
+    {
+      "example": "pet_bowl_stand.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 12.238400000002002,
+      "render": 14853.508499999996,
+      "bytes": 440084,
+      "triangles": 8800,
+      "log": [
+        "   Vertices:     4412",
+        "   Halfedges:   17572",
+        "   Edges:        8786",
+        "   Halffacets:   8798",
+        "   Facets:       4399",
+        "   Volumes:        10"
+      ],
+      "total": 14879.381299999994
+    },
+    {
+      "example": "pet_bowl_stand.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 10.728899999987334,
+      "render": 74.8122999999905,
+      "bytes": 334684,
+      "triangles": 6692,
+      "log": [
+        "Total rendering time: 0:00:00.058",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -6",
+        "   Vertices:     3360",
+        "   Facets:       6692"
+      ],
+      "total": 99.94169999999576
+    },
+    {
+      "example": "pet_bowl_stand.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.008199999982025,
+      "render": 509.0873000000138,
+      "bytes": 3962484,
+      "triangles": 79248,
+      "log": [
+        "Total rendering time: 0:00:00.491",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      -6",
+        "   Vertices:    39638",
+        "   Facets:      79248"
+      ],
+      "total": 534.110400000005
+    },
+    {
+      "example": "svg_icon_to_3d.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 10.947000000014668,
+      "render": 459.63300000000163,
+      "bytes": 615684,
+      "triangles": 12312,
+      "log": [
+        "Total rendering time: 0:00:00.447",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      0",
+        "   Vertices:     6158",
+        "   Facets:      12312"
+      ],
+      "total": 483.5885999999882
+    },
+    {
+      "example": "svg_icon_to_3d.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 10.94550000000163,
+      "render": 31247.373699999996,
+      "bytes": 615684,
+      "triangles": 12312,
+      "log": [
+        "   Vertices:     6158",
+        "   Halfedges:   18474",
+        "   Edges:        9237",
+        "   Halffacets:   6170",
+        "   Facets:       3085",
+        "   Volumes:         2"
+      ],
+      "total": 31271.432
+    },
+    {
+      "example": "svg_icon_to_3d.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 10.910300000017742,
+      "render": 444.0512999999919,
+      "bytes": 615684,
+      "triangles": 12312,
+      "log": [
+        "Total rendering time: 0:00:00.432",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      0",
+        "   Vertices:     6158",
+        "   Facets:      12312"
+      ],
+      "total": 469.19779999999446
+    },
+    {
+      "example": "svg_icon_to_3d.scad",
+      "variant": "manifold-export",
+      "ok": true,
+      "instantiate": 11.067700000014156,
+      "render": 450.01329999999143,
+      "bytes": 616284,
+      "triangles": 12324,
+      "log": [
+        "Total rendering time: 0:00:00.438",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      0",
+        "   Vertices:     6164",
+        "   Facets:      12324"
+      ],
+      "total": 474.5877999999793
+    }
+  ]
+}

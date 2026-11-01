@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>M0 Engine Spike</title>
+  <style>
+    body { font: 14px system-ui, sans-serif; margin: 16px; background: #fff; color: #111; }
+    pre { background: #f4f4f5; padding: 12px; white-space: pre-wrap; }
+    button, select { font: inherit; margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <h1>M0 — OpenSCAD WASM di browser</h1>
+  <p>
+    <select id="example"></select>
+    <select id="backend"><option value="manifold">manifold</option><option value="cgal">cgal</option><option value="">default</option></select>
+    <button id="run">Render</button>
+    <button id="all">Render semua (manifold)</button>
+    <button id="cancel">Batalkan</button>
+  </p>
+  <pre id="log">memuat…</pre>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

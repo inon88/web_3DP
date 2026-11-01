@@ -1,0 +1,59 @@
+{
+  "compileMs": 30.309600000000003,
+  "results": [
+    {
+      "example": "bracket.scad",
+      "variant": "default",
+      "ok": true,
+      "instantiate": 41.02919999999999,
+      "render": 46.644300000000015,
+      "bytes": 13884,
+      "triangles": 276,
+      "log": [
+        "Total rendering time: 0:00:00.023",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      2",
+        "   Vertices:      136",
+        "   Facets:        276"
+      ],
+      "total": 102.24629999999999
+    },
+    {
+      "example": "bracket.scad",
+      "variant": "cgal",
+      "ok": true,
+      "instantiate": 14.184799999999996,
+      "render": 146.953,
+      "bytes": 13884,
+      "triangles": 276,
+      "log": [
+        "   Vertices:      136",
+        "   Halfedges:     408",
+        "   Edges:         204",
+        "   Halffacets:    140",
+        "   Facets:         70",
+        "   Volumes:         2"
+      ],
+      "total": 175.2138
+    },
+    {
+      "example": "bracket.scad",
+      "variant": "manifold",
+      "ok": true,
+      "instantiate": 11.57990000000001,
+      "render": 7.3326000000000136,
+      "bytes": 13884,
+      "triangles": 276,
+      "log": [
+        "Total rendering time: 0:00:00.004",
+        "   Top level object is a 3D object (manifold):",
+        "   Status:     NoError",
+        "   Genus:      2",
+        "   Vertices:      136",
+        "   Facets:        276"
+      ],
+      "total": 31.85080000000005
+    }
+  ]
+}

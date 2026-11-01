@@ -1,0 +1,21 @@
+{
+  "wasm": "openscad/2026.10.11/openscad.wasm",
+  "vtracer": "vtracer/1.0.0-alpha.4/vtracer.wasm",
+  "fontDir": "fonts/liberation-2.1.5",
+  "integrity": {
+    "fonts/liberation-2.1.5/LiberationMono-Bold.ttf": "sha256-vWKgZy0Lm2cQsB30NMgK1U+l8INSB+t7F7enYUYwZ7s=",
+    "fonts/liberation-2.1.5/LiberationMono-BoldItalic.ttf": "sha256-eUUfPAn+JRFgmIU7eiym4kNiIMzBGvAil5rbzxlb4TA=",
+    "fonts/liberation-2.1.5/LiberationMono-Italic.ttf": "sha256-YFwBxxG0RICnUI00nfvzJk6B+kPWnmHPp9ELhudkxNE=",
+    "fonts/liberation-2.1.5/LiberationMono-Regular.ttf": "sha256-8rg8dj6K/SFwkzM3C+1HdDN/roImeTfita6n4vvZIsE=",
+    "fonts/liberation-2.1.5/LiberationSans-Bold.ttf": "sha256-eIq+5MgG1mDoruRmid2FQM1LuY2gPcydFxzj79makXM=",
+    "fonts/liberation-2.1.5/LiberationSans-BoldItalic.ttf": "sha256-aY2nD8GRzF8zrU1tP+gw/kYkuJjqLjFplVkot8SR8e4=",
+    "fonts/liberation-2.1.5/LiberationSans-Italic.ttf": "sha256-5brlxM3jHyIUJ1OFX0+PuG2m/zmVXtPAoRJIsNFpSLA=",
+    "fonts/liberation-2.1.5/LiberationSans-Regular.ttf": "sha256-dtBMGOokP0JrfeHzrSCOknAI+WHcWUXlqtNS0N/ejug=",
+    "fonts/liberation-2.1.5/LiberationSerif-Bold.ttf": "sha256-11S6Qnz+C8pUrgUjhLqo+ELaW9ZVCtTaAkrEQeen1c4=",
+    "fonts/liberation-2.1.5/LiberationSerif-BoldItalic.ttf": "sha256-8X24r3HiTSBmtYdUYCHU8LKWvjiVErZY3sPAmv/rEac=",
+    "fonts/liberation-2.1.5/LiberationSerif-Italic.ttf": "sha256-Dj3qn41hPgBsz6YiAfM+Jl0ZFnvQkHclw+FFNosE/C4=",
+    "fonts/liberation-2.1.5/LiberationSerif-Regular.ttf": "sha256-BY6oCGSu8Joj9Fy+wrtUALw9+96gHD8QU4oh/LSX+3Q=",
+    "openscad/2026.10.11/openscad.wasm": "sha256-LEARoXV3xds8+tO3REumGSlcnFuFJ8kxpgKOVGlfDQM=",
+    "vtracer/1.0.0-alpha.4/vtracer.wasm": "sha256-Y3FrcEl7dGjvl1RbUPXzS4u7es3i17AN6060B4FEbUU="
+  }
+}

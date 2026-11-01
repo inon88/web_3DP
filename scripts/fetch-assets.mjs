@@ -1,0 +1,185 @@
+// Prepares the OpenSCAD engine and the bundled fonts, verifying pinned SHA-256 hashes.
+// The hashes live in this file (not next to the downloads), so a compromised download server cannot
+// substitute files. Update them deliberately when upgrading.
+//
+// Output:
+//   public/openscad/<version>/openscad.wasm     served as-is; versioned path → cached as immutable
+//   public/fonts/liberation-<version>/*.ttf     same
+//   src/vendor/openscad/openscad.js             the JS glue, bundled by Vite into the render worker
+//   public/vtracer/<version>/vtracer.wasm       image tracing (vtracer, MIT/Apache-2.0); versioned → immutable
+//   src/vendor/vtracer/vtracer.js               its wasm-bindgen glue as an ES module (bundled into the trace worker)
+//   src/platform/asset-manifest.json            asset paths + SRI hashes used at runtime
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
+import { gunzipSync } from 'fflate';
+
+const WEB = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const APP = path.resolve(WEB, '..');
+const PUBLIC = path.join(WEB, 'public');
+
+// OpenSCAD WASM snapshot (fetched and verified by the desktop app's scripts/fetch-openscad-wasm.cjs).
+const OPENSCAD = {
+  version: '2026.10.11',
+  source: path.join(APP, 'vendor', 'openscad-wasm'),
+  glueSha256: '7d2c692ba2b4bb125115f0b69ea0897f877f55bdabd8552c7ca84cfef62242d5',
+  wasmSha256: '2c4011a17577c5db3cfad3b7444ba619295c9c5b8527c931a6028e54695f0d03'
+};
+
+// Liberation fonts (SIL Open Font License 1.1): metric-compatible with Arial, Times New Roman, Courier New.
+const FONTS = {
+  version: '2.1.5',
+  url: 'https://github.com/liberationfonts/liberation-fonts/files/7261482/liberation-fonts-ttf-2.1.5.tar.gz',
+  sha256: '7191c669bf38899f73a2094ed00f7b800553364f90e2637010a69c0e268f25d0',
+  keep: /^liberation-fonts-ttf-2\.1\.5\/(Liberation(?:Sans|Serif|Mono)-(?:Regular|Bold|Italic|BoldItalic)\.ttf|LICENSE)$/
+};
+
+// vtracer from npm (devDependency, same version and hashes as the desktop app). Its glue targets Node
+// (require('fs')); prepareVtracer() turns it into an ES module that is given a compiled WebAssembly.Module.
+const VTRACER = {
+  version: '1.0.0-alpha.4',
+  source: path.join(WEB, 'node_modules', '@visioncortex', 'vtracer', 'pkg'),
+  glueSha256: 'e1855e9bb29d785344f672abdc692ca90ffa7ed863b9186b51c4e95a2a7dc17d',
+  wasmSha256: '63716b70497b7468ef97545b50f5f34b8bbb7acde2d7b00deb4eb40781446d45'
+};
+const VTRACER_PATH = `vtracer/${VTRACER.version}/vtracer.wasm`;
+const VTRACER_GLUE_TARGET = path.join(WEB, 'src', 'vendor', 'vtracer', 'vtracer.js');
+
+const WASM_PATH = `openscad/${OPENSCAD.version}/openscad.wasm`;
+const FONT_DIR = `fonts/liberation-${FONTS.version}`;
+const GLUE_TARGET = path.join(WEB, 'src', 'vendor', 'openscad', 'openscad.js');
+
+const sha256 = data => crypto.createHash('sha256').update(data).digest('hex');
+const exists = file => fs.access(file).then(() => true, () => false);
+
+// Reads a pinned file from the desktop app's vendor folder, or from an earlier copy in this project
+// (so a standalone checkout without ../ still builds).
+async function readPinned(candidates, hash, label) {
+  for (const candidate of candidates) {
+    if (!await exists(candidate)) continue;
+    const data = await fs.readFile(candidate);
+    if (sha256(data) === hash) return data;
+  }
+  throw new Error(`${label} with the pinned SHA-256 was not found. Run "node scripts/fetch-openscad-wasm.cjs" in the desktop app (..) first.`);
+}
+
+async function prepareOpenScad() {
+  const wasmTarget = path.join(PUBLIC, WASM_PATH);
+  if (!await exists(wasmTarget) || sha256(await fs.readFile(wasmTarget)) !== OPENSCAD.wasmSha256) {
+    const wasm = await readPinned([path.join(OPENSCAD.source, 'openscad.wasm'), path.join(PUBLIC, 'openscad', 'openscad.wasm')], OPENSCAD.wasmSha256, 'openscad.wasm');
+    await fs.mkdir(path.dirname(wasmTarget), { recursive: true });
+    await fs.writeFile(wasmTarget, wasm);
+    console.log('openscad', WASM_PATH, (wasm.length / 1024 / 1024).toFixed(1) + ' MB');
+  }
+
+  // The glue is verified first, then one line is neutralized: `new URL("openscad.wasm", import.meta.url)`
+  // would make Vite copy the 11 MB WASM a second time. The app passes instantiateWasm, so that URL is unused.
+  if (!await exists(GLUE_TARGET)) {
+    const glue = (await readPinned([path.join(OPENSCAD.source, 'openscad.js'), path.join(PUBLIC, 'openscad', 'openscad.js')], OPENSCAD.glueSha256, 'openscad.js')).toString('utf8');
+    const needle = 'new URL("openscad.wasm",import.meta.url).href';
+    if (glue.split(needle).length !== 2) throw new Error('openscad.js changed shape; review the glue patch in scripts/fetch-assets.mjs.');
+    await fs.mkdir(path.dirname(GLUE_TARGET), { recursive: true });
+    await fs.writeFile(GLUE_TARGET,
+      `// OpenSCAD ${OPENSCAD.version} WebAssembly glue (sha256 ${OPENSCAD.glueSha256}).\n`
+      + '// Generated by scripts/fetch-assets.mjs: only the static WASM URL is replaced. Do not edit.\n'
+      + glue.replace(needle, '"openscad.wasm"'));
+    console.log('openscad glue → src/vendor/openscad/openscad.js');
+  }
+
+  // Unversioned files from earlier builds.
+  for (const old of ['openscad.js', 'openscad.wasm']) await fs.rm(path.join(PUBLIC, 'openscad', old), { force: true });
+}
+
+async function prepareVtracer() {
+  const wasmTarget = path.join(PUBLIC, VTRACER_PATH);
+  if (!await exists(wasmTarget) || sha256(await fs.readFile(wasmTarget)) !== VTRACER.wasmSha256) {
+    const wasm = await readPinned([path.join(VTRACER.source, 'vtracer_wasm_bg.wasm')], VTRACER.wasmSha256, 'vtracer_wasm_bg.wasm (run npm install)');
+    await fs.mkdir(path.dirname(wasmTarget), { recursive: true });
+    await fs.writeFile(wasmTarget, wasm);
+    console.log('vtracer ', VTRACER_PATH, (wasm.length / 1024).toFixed(0) + ' KB');
+  }
+  const glue = (await readPinned([path.join(VTRACER.source, 'vtracer_wasm.js')], VTRACER.glueSha256, 'vtracer_wasm.js (run npm install)')).toString('utf8').replace(/\r\n/g, '\n');
+  const loader = glue.match(/\nconst wasmPath = [^\n]*\nconst wasmBytes = [^\n]*\nconst wasmModule = [^\n]*\nlet wasmInstance = [^\n]*\nlet wasm = wasmInstance\.exports;\nwasm\.__wbindgen_start\(\);\n?/);
+  const exportsFound = glue.match(/^exports\.\w+ = \w+;$/gm) || [];
+  if (!loader || exportsFound.length !== 2 || /require\(/.test(glue.replace(loader[0], ''))) {
+    throw new Error('vtracer_wasm.js changed shape; review the glue conversion in scripts/fetch-assets.mjs.');
+  }
+  const module = glue
+    .replace(/^exports\.\w+ = \w+;$/gm, '')
+    .replace(loader[0], `
+let wasm;
+// Instantiates the precompiled module once; call before vectorize_*.
+export function initVtracer(wasmModule) {
+  if (wasm) return;
+  wasm = new WebAssembly.Instance(wasmModule, __wbg_get_imports()).exports;
+  wasm.__wbindgen_start();
+}
+export { vectorize_bytes, vectorize_rgba };
+// Same name as the npm package's index.js, so image-trace.js runs unchanged.
+export const convertPixels = (rgba, width, height, options = {}) => vectorize_rgba(rgba, width, height, options);
+`);
+  await fs.mkdir(path.dirname(VTRACER_GLUE_TARGET), { recursive: true });
+  await fs.writeFile(VTRACER_GLUE_TARGET,
+    `// vtracer ${VTRACER.version} wasm-bindgen glue (sha256 ${VTRACER.glueSha256}), as an ES module.\n`
+    + '// Generated by scripts/fetch-assets.mjs: only the Node loader and CommonJS exports are replaced. Do not edit.\n'
+    + module);
+}
+
+// Minimal ustar reader: regular files only.
+function* untar(bytes) {
+  for (let offset = 0; offset + 512 <= bytes.length;) {
+    const header = bytes.subarray(offset, offset + 512);
+    if (header.every(byte => byte === 0)) return;
+    const text = (start, length) => new TextDecoder().decode(header.subarray(start, start + length)).replace(/\0.*$/s, '');
+    const prefix = text(345, 155);
+    const name = (prefix ? prefix + '/' : '') + text(0, 100);
+    const size = parseInt(text(124, 12).trim() || '0', 8);
+    const type = text(156, 1);
+    if (type === '0' || type === '') yield { name, data: bytes.subarray(offset + 512, offset + 512 + size) };
+    offset += 512 + Math.ceil(size / 512) * 512;
+  }
+}
+
+async function prepareFonts() {
+  const target = path.join(PUBLIC, FONT_DIR);
+  if (await exists(path.join(target, 'LiberationSans-Bold.ttf'))) return;
+  await fs.mkdir(target, { recursive: true });
+  // Move fonts from the earlier unversioned folder instead of downloading again.
+  const flat = path.join(PUBLIC, 'fonts');
+  const earlier = (await fs.readdir(flat)).filter(name => /\.(ttf|txt)$/.test(name));
+  if (earlier.some(name => name === 'LiberationSans-Bold.ttf')) {
+    for (const name of earlier) await fs.rename(path.join(flat, name), path.join(target, name));
+    console.log('fonts    moved to', FONT_DIR);
+    return;
+  }
+  console.log(`fonts    downloading Liberation ${FONTS.version}…`);
+  const response = await fetch(FONTS.url, { redirect: 'follow' });
+  if (!response.ok) throw new Error('Font download failed: HTTP ' + response.status);
+  const archive = new Uint8Array(await response.arrayBuffer());
+  if (sha256(archive) !== FONTS.sha256) throw new Error('The Liberation font archive does not match the pinned SHA-256.');
+  for (const entry of untar(gunzipSync(archive))) {
+    const match = entry.name.match(FONTS.keep);
+    if (!match) continue;
+    await fs.writeFile(path.join(target, match[1] === 'LICENSE' ? 'LICENSE-Liberation.txt' : match[1]), entry.data);
+  }
+  console.log('fonts    ok');
+}
+
+// SRI hashes: the app fetches these files with fetch(url, { integrity }), so neither a CDN
+// (VITE_ASSET_BASE) nor a cache in between can substitute a file.
+async function writeManifest() {
+  const integrity = {};
+  const fonts = (await fs.readdir(path.join(PUBLIC, FONT_DIR))).filter(name => name.endsWith('.ttf')).map(name => `${FONT_DIR}/${name}`);
+  for (const file of [WASM_PATH, VTRACER_PATH, ...fonts].sort()) {
+    integrity[file] = 'sha256-' + crypto.createHash('sha256').update(await fs.readFile(path.join(PUBLIC, file))).digest('base64');
+  }
+  const manifest = { wasm: WASM_PATH, vtracer: VTRACER_PATH, fontDir: FONT_DIR, integrity };
+  await fs.writeFile(path.join(WEB, 'src', 'platform', 'asset-manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
+  console.log('manifest', Object.keys(integrity).length, 'integrity hashes');
+}
+
+await prepareOpenScad();
+await prepareFonts();
+await prepareVtracer();
+await writeManifest();

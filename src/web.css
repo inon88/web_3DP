@@ -1,0 +1,6 @@
+/* Web-only adjustments on top of the shared styles.css. */
+
+/* Desktop features that arrive later on the web (M3: import, delete, custom parameters, export folder). */
+.web-unavailable {
+  display: none !important;
+}

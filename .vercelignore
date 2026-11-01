@@ -1,0 +1,11 @@
+# Uploaded by `vercel deploy` from this folder: only what the build needs.
+node_modules
+dist
+.vite
+.vercel
+spike
+imple
+test
+*.md
+*.log
+.env*.local
