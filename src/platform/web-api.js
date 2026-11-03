@@ -10,7 +10,9 @@ import { chooseTarget, writeTarget, sanitizeName } from './export.js';
 import { pickFiles } from './file-picker.js';
 import { addToolAsset, addIconFiles, iconIndex, readIcon } from './session-files.js';
 import { traceImage } from './trace.js';
-import { validateHeightmapPng } from '../shared/heightmap.js';
+import { validateHeightmapPng, LITHOPHANE_LIMITS } from '../shared/heightmap.js';
+import { LITHOPHANE_IMAGE_PARAMETER } from '../shared/lithophane.js';
+import { renderLithophane, isGeneratorTool } from './lithophane.js';
 
 const MAX_PARAMETER_FILE_BYTES = 10 * 1024 * 1024;
 
@@ -40,6 +42,11 @@ function recordPreview(job, quality, result) {
 }
 
 async function renderExport(toolId, values, format) {
+  const tool = await getTool(toolId);
+  if (isGeneratorTool(tool)) {
+    const result = await renderLithophane(tool, values, format, { channel: 'export', timeoutMs: EXPORT_TIMEOUT_MS });
+    return { ...result, job: { tool, separateObjects: false }, quality: 'maximum' };
+  }
   const job = await prepareRenderJob(toolId, values);
   try {
     const result = await render(job, format, EXPORT_QUALITY, { channel: 'export', timeoutMs: EXPORT_TIMEOUT_MS });
@@ -72,6 +79,11 @@ export const formforge = {
   },
 
   async render(toolId, values) {
+    const tool = await getTool(toolId);
+    if (isGeneratorTool(tool)) {
+      const result = await renderLithophane(tool, values, '3mf', { preview: true, channel: 'preview', timeoutMs: PREVIEW_TIMEOUT_MS });
+      return { mesh: result.output, bytes: result.output.byteLength, items: parseItemEchoes(result.itemEchoes), plates: null, quality: 'export', cached: false, info: result.info, renderMs: result.renderMs };
+    }
     const job = await prepareRenderJob(toolId, values);
     const quality = previewQuality(job);
     // Preview as 3MF so model colors show in the viewer (same as the desktop).
@@ -173,8 +185,9 @@ export const formforge = {
     return { reference: addToolAsset(toolId, '.svg', new TextEncoder().encode(svg)) };
   },
   async saveHeightmapAsset(toolId, parameterName, png) {
-    if (parameterName !== 'relief_image_file') throw new Error('The selected relief parameter is not available.');
-    const { data } = validateHeightmapPng(png);
+    if (parameterName !== 'relief_image_file' && parameterName !== LITHOPHANE_IMAGE_PARAMETER) throw new Error('The selected relief parameter is not available.');
+    // Lithophane images feed the JavaScript generator, which handles more pixels than surface().
+    const { data } = validateHeightmapPng(png, parameterName === LITHOPHANE_IMAGE_PARAMETER ? LITHOPHANE_LIMITS : undefined);
     const tool = await getTool(toolId);
     const parameter = tool.parameters.find(item => item.name === parameterName);
     if (!parameter || parameter.type !== 'string') throw new Error('The selected relief parameter is not available.');

@@ -48,9 +48,9 @@ function requireFont(name, what) {
   return font;
 }
 
-export async function prepareRenderJob(toolId, values) {
-  const tool = await getTool(toolId);
-  const source = await toolSource(tool);
+// Checks every value against the tool's parameters (type, range, options); defaults fill the gaps.
+// Shared with the Lithophane generator (platform/lithophane.js).
+export function validateParameterValues(tool, values) {
   const params = {};
   const nestedParameterOverrides = {};
   let nestedFontNames = [];
@@ -80,6 +80,13 @@ export async function prepareRenderJob(toolId, values) {
     }
     params[parameter.name] = value;
   }
+  return { params, nestedParameterOverrides, nestedFontNames };
+}
+
+export async function prepareRenderJob(toolId, values) {
+  const tool = await getTool(toolId);
+  const source = await toolSource(tool);
+  const { params, nestedParameterOverrides, nestedFontNames } = validateParameterValues(tool, values);
 
   // Font parameters are rewritten to the bundled font's exact name, so fontconfig finds it.
   const fonts = new Map();

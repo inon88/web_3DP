@@ -7,7 +7,7 @@
    "category": "Example",
    "entry": "articulated_cube_keychain.scad",
    "builtIn": true,
-   "revision": "09cc626991e4a9f1",
+   "revision": "7da53cfa13b65186",
    "parameters": [
     {
      "name": "text_chars",
@@ -307,7 +307,7 @@
    "files": [
     {
      "path": "articulated_cube_keychain.scad",
-     "bytes": 14448
+     "bytes": 14978
     }
    ]
   },
@@ -4029,6 +4029,207 @@
     {
      "path": "C_keychain.scad",
      "bytes": 13203
+    }
+   ]
+  },
+  {
+   "id": "lithophane-flat",
+   "name": "Lithophane Flat",
+   "category": "Example",
+   "entry": "lithophane_flat.scad",
+   "builtIn": true,
+   "revision": "911ede65d1bdd6c4",
+   "parameters": [
+    {
+     "name": "relief_image_file",
+     "label": "Relief image file",
+     "type": "string",
+     "default": "",
+     "group": "Image",
+     "description": "Choose image: dark areas become thick, light areas thin (keep Invert off in the next step)",
+     "source": "scad"
+    },
+    {
+     "name": "image_mode",
+     "label": "Image mode",
+     "type": "string",
+     "default": "Positive",
+     "group": "Image",
+     "description": "Positive = normal photo when lit; Negative = inverted picture",
+     "options": [
+      "Positive",
+      "Negative"
+     ],
+     "source": "scad"
+    },
+    {
+     "name": "size_mm",
+     "label": "Size mm",
+     "type": "number",
+     "default": 100,
+     "group": "Size",
+     "description": "Size of the picture along the side chosen below (the other side follows the image)",
+     "min": 30,
+     "step": 1,
+     "max": 250,
+     "source": "scad"
+    },
+    {
+     "name": "fit_side",
+     "label": "Fit side",
+     "type": "string",
+     "default": "Width",
+     "group": "Size",
+     "description": "Which side of the image gets the size above",
+     "options": [
+      "Width",
+      "Height"
+     ],
+     "source": "scad"
+    },
+    {
+     "name": "max_thickness_mm",
+     "label": "Max thickness mm",
+     "type": "number",
+     "default": 3,
+     "group": "Size",
+     "description": "Thickness at the darkest spots",
+     "min": 1.2,
+     "step": 0.1,
+     "max": 6,
+     "source": "scad"
+    },
+    {
+     "name": "min_thickness_mm",
+     "label": "Min thickness mm",
+     "type": "number",
+     "default": 0.8,
+     "group": "Size",
+     "description": "Thickness at the lightest spots (one or two perimeters' worth keeps the plate strong)",
+     "min": 0.3,
+     "step": 0.1,
+     "max": 2,
+     "source": "scad"
+    },
+    {
+     "name": "shape",
+     "label": "Shape",
+     "type": "string",
+     "default": "Rectangle",
+     "group": "Shape",
+     "description": "Outline of the lithophane; Circle and Heart are centred on the picture",
+     "options": [
+      "Rectangle",
+      "Rounded",
+      "Circle",
+      "Heart"
+     ],
+     "source": "scad"
+    },
+    {
+     "name": "corner_radius_mm",
+     "label": "Corner radius mm",
+     "type": "number",
+     "default": 6,
+     "group": "Shape",
+     "description": "Corner radius for Rounded",
+     "min": 1,
+     "step": 0.5,
+     "max": 40,
+     "source": "scad"
+    },
+    {
+     "name": "shape_size_percent",
+     "label": "Shape size percent",
+     "type": "number",
+     "default": 100,
+     "group": "Shape",
+     "description": "Circle/Heart: width in percent of the size above (set Fit side to the image's shorter side)",
+     "min": 40,
+     "step": 1,
+     "max": 100,
+     "source": "scad"
+    },
+    {
+     "name": "frame_mm",
+     "label": "Frame mm",
+     "type": "number",
+     "default": 4,
+     "group": "Frame",
+     "description": "Solid border around the picture (0 = none)",
+     "min": 0,
+     "step": 0.5,
+     "max": 15,
+     "source": "scad"
+    },
+    {
+     "name": "frame_thickness_mm",
+     "label": "Frame thickness mm",
+     "type": "number",
+     "default": 4,
+     "group": "Frame",
+     "description": "Border thickness; at least the maximum thickness",
+     "min": 1.2,
+     "step": 0.1,
+     "max": 10,
+     "source": "scad"
+    },
+    {
+     "name": "hanger",
+     "label": "Hanger",
+     "type": "boolean",
+     "default": true,
+     "group": "Hanger",
+     "description": "Ring at the top centre for a string or hook",
+     "source": "scad"
+    },
+    {
+     "name": "hanger_diameter_mm",
+     "label": "Hanger diameter mm",
+     "type": "number",
+     "default": 10,
+     "group": "Hanger",
+     "description": "Outer diameter of the ring",
+     "min": 6,
+     "step": 0.5,
+     "max": 20,
+     "source": "scad"
+    },
+    {
+     "name": "hanger_hole_mm",
+     "label": "Hanger hole mm",
+     "type": "number",
+     "default": 4,
+     "group": "Hanger",
+     "description": "Hole diameter",
+     "min": 2,
+     "step": 0.5,
+     "max": 12,
+     "source": "scad"
+    },
+    {
+     "name": "plate_color",
+     "label": "Plate color",
+     "type": "string",
+     "default": "White",
+     "group": "Colour",
+     "description": "",
+     "options": [
+      "White",
+      "Ivory",
+      "Beige",
+      "LightGray",
+      "LightSkyBlue",
+      "Pink"
+     ],
+     "source": "scad"
+    }
+   ],
+   "parameterParserVersion": 6,
+   "files": [
+    {
+     "path": "lithophane_flat.scad",
+     "bytes": 7435
     }
    ]
   },

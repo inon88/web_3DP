@@ -1,5 +1,8 @@
-// Built-in, read-only tool library served from /library (built by scripts/build-library.mjs).
-// Imported user tools (IndexedDB) arrive in M3.
+// Built-in, read-only tool library served from /library (built by scripts/build-library.mjs),
+// plus the Lithophane generator (JavaScript, no .scad files). Imported user tools arrive in M3.
+import { lithophaneManifest, LITHOPHANE_GENERATOR_VERSION } from '../shared/lithophane.js';
+
+const GENERATOR_TOOLS = [{ ...lithophaneManifest('2026-11-03T00:00:00.000Z'), revision: 'generator-' + LITHOPHANE_GENERATOR_VERSION, files: [] }];
 let indexPromise = null;
 const fileCache = new Map();
 
@@ -10,7 +13,7 @@ export function loadLibrary() {
         if (!response.ok) throw new Error(`The tool library could not be loaded (HTTP ${response.status}).`);
         return response.json();
       })
-      .then(index => (Array.isArray(index?.tools) ? index.tools : []));
+      .then(index => [...GENERATOR_TOOLS, ...(Array.isArray(index?.tools) ? index.tools : [])]);
     indexPromise.catch(() => { indexPromise = null; });
   }
   return indexPromise;

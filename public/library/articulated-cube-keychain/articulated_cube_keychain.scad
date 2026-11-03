@@ -2,8 +2,8 @@
 //
 // Joints copy the "Flexible Keychain" (MakerWorld) principle: two round links at right angles, hooked into each
 // other in the gap between the cubes, like the links of a chain.
-//   +X side of a cube: a round D-shaped link lying flat (XY plane). Its legs taper at 45° from the face; its thin
-//   front is a short bridge between them.
+//   +X side of a cube: a round D-shaped link lying flat (XY plane). Its legs are 4.8 mm tall and narrow at 45° to
+//   its thin front (3.2 mm); as in the reference, its flat underside is a short overhang from the cube.
 //   -X side of a cube: a round D-shaped link standing upright (XZ plane). Its underside follows a 45° line that
 //   touches the round front, and its hole is a teardrop, so nothing overhangs more than 45°.
 // Each face has a pocket where the partner link moves, so the chain bends up/down and sideways and twists.
@@ -114,8 +114,10 @@ xh1 = xhc + hy1;                             // tip (reaches into cube i + 1)
 back_i = xv0 - G;                            // back wall of the pocket in cube i
 back_j = xh1 + G;                            // back wall of the pocket in cube i + 1
 root_j = back_j + wire;                      // the upright link is rooted this deep in cube i + 1
-// Half height of the flat link's legs: 45° taper from cube i down to the tip.
-function h_half(x) = min(hb + max(0, xh1 - x), s / 2 - 0.6);
+// Half height of the flat link: legs 1.5 × the front (4.8 mm tall, as in the reference), narrowing at 45° to the
+// thin front. Without the cap the 45° taper grew to almost the full cube height and walled off the gap.
+hl = min(1.5 * hb, s / 2 - 0.6);
+function h_half(x) = min(hb + max(0, xh1 - x), hl);
 // Underside of the upright link: 45° line touching its round front, never below the floor.
 function v_line(x) = max(floor_z, -(x - xc) - vz1 * R2);
 
@@ -126,7 +128,8 @@ function fit_text(t, w, h) = let(m = textmetrics(text = t, size = 10, font = fon
 
 // --- Links (joint frame) ------------------------------------------------------------------------------------
 module flat_link() {
-    root = face_i - 1;
+    // Rooted 1 mm past the pocket's flared mouth, so the legs are held by solid cube on three sides.
+    root = face_i - flare - 1;
     // D shape: two straight legs from the root plus a half-ring front.
     module ring_2d() {
         for (sy = [-1, 1]) translate([root, sy > 0 ? hy0 : -hy1]) square([xhc - root + EPS, wire]);
@@ -138,8 +141,11 @@ module flat_link() {
     // Sides (|y| >= hy0): tapered at 45°.
     intersection() {
         translate([0, 0, -s]) linear_extrude(height = 2 * s) ring_2d();
+        // Side profile: full leg height up to the knee, then 45° down to the front's height at the tip.
+        knee = max(root, xh1 - (hl - hb));
         translate([0, hy1 + 1, 0]) rotate([90, 0, 0]) linear_extrude(height = 2 * hy1 + 2)
-            polygon([[root, -h_half(root)], [xh1 + 1, -h_half(xh1 + 1)], [xh1 + 1, h_half(xh1 + 1)], [root, h_half(root)]]);
+            polygon([[root, -hl], [knee, -h_half(knee)], [xh1, -hb], [xh1 + 1, -hb],
+                     [xh1 + 1, hb], [xh1, hb], [knee, h_half(knee)], [root, hl]]);
         for (sy = [-1, 1]) translate([root - 1, sy > 0 ? hy0 : -hy1 - 1, -s]) cube([xh1 - root + 2, hy1 + 1 - hy0, 2 * s]);
     }
     // Front (|y| < hy0): thin, it passes through the upright link.

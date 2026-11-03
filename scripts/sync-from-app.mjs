@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 const WEB = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const APP = path.resolve(WEB, '..');
 const SHARED = path.join(WEB, 'src', 'shared');
-const MODULES = ['parameters', 'transform', 'heightmap', 'raster-to-svg', 'svg-layers', 'font-name', 'mesh-transform', 'scad-assets', 'image-trace'];
+const MODULES = ['parameters', 'transform', 'heightmap', 'raster-to-svg', 'svg-layers', 'font-name', 'mesh-transform', 'scad-assets', 'image-trace', 'lithophane'];
 const UI_FILES = [['renderer.js', 'src/renderer.js'], ['index.html', 'index.html'], ['styles.css', 'src/styles.css']];
 
 function convert(name, source) {
