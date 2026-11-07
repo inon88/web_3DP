@@ -146,6 +146,30 @@
    "bytes": 130152
   },
   {
+   "name": "Chewy",
+   "family": "Chewy",
+   "style": "Regular",
+   "weight": 400,
+   "italic": false,
+   "category": "Display",
+   "hinted": true,
+   "url": "https://fonts.gstatic.com/s/chewy/v18/uK_94ruUb-k-wk5y.woff",
+   "integrity": "sha256-cMBwJuG0KrkfjwDdTuG/eJGevMpdiWl7QvKRLmw2tdQ=",
+   "bytes": 23716
+  },
+  {
+   "name": "Coiny",
+   "family": "Coiny",
+   "style": "Regular",
+   "weight": 400,
+   "italic": false,
+   "category": "Display",
+   "hinted": false,
+   "url": "https://fonts.gstatic.com/s/coiny/v17/gyByhwU1K989PXwY.woff",
+   "integrity": "sha256-1B6kYYRg9PaCFEgpdOd5Rat/OeQZn2hl7WgBN3aQv1s=",
+   "bytes": 58960
+  },
+  {
    "name": "Comic Neue",
    "family": "Comic Neue",
    "style": "Regular",
@@ -228,6 +252,30 @@
    "url": "https://fonts.gstatic.com/s/fredoka/v17/X7nP4b87HvSqjb_WIi2yDCRwoQ_k7367_B-i2yQag0-mac3OFiXMFQ.woff",
    "integrity": "sha256-nceN8PkVC7bQJh+YGtwZH+b+mTJlaOhPgGlHn/RI8x0=",
    "bytes": 25636
+  },
+  {
+   "name": "Gorditas",
+   "family": "Gorditas",
+   "style": "Regular",
+   "weight": 400,
+   "italic": false,
+   "category": "Display",
+   "hinted": true,
+   "url": "https://fonts.gstatic.com/s/gorditas/v24/ll8_K2aTVD26DsPEtQDr.woff",
+   "integrity": "sha256-jJyEyF4Lm3oOc2jIMQiEKF8RSNMgfmrnIdIowVDZuVs=",
+   "bytes": 51596
+  },
+  {
+   "name": "Gorditas:style=Bold",
+   "family": "Gorditas",
+   "style": "Bold",
+   "weight": 700,
+   "italic": false,
+   "category": "Display",
+   "hinted": true,
+   "url": "https://fonts.gstatic.com/s/gorditas/v24/ll84K2aTVD26DsPEtThUIooL.woff",
+   "integrity": "sha256-ht+PtS8QM8HHXPwXiFfqlUwRSHwb9FNYmQO6ntBNBRk=",
+   "bytes": 49520
   },
   {
    "name": "Great Vibes",
