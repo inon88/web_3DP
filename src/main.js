@@ -12,3 +12,5 @@ warmUpEngine();
 await import('./renderer.js');
 const { startFontPreview } = await import('./web/font-preview.js');
 startFontPreview();
+const { startPwa } = await import('./web/pwa.js');
+startPwa(engineEvents);

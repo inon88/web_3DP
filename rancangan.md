@@ -74,11 +74,11 @@ Browser
 
 | Fitur desktop | Versi web |
 |---|---|
-| Pustaka di `%APPDATA%` | **Pustaka bawaan** dari `examples/` (read-only, disajikan statis) + **tool impor pengguna** di IndexedDB |
+| Pustaka di `%APPDATA%` | **Pustaka bawaan** dari `examples/` (read-only, disajikan statis) + **tool impor pengguna** di memori tab saja (§16) |
 | Add tool › SCAD file | `<input type=file>` + **seret & lepas** file `.scad` ke jendela |
 | Add tool › Project folder | Pemilih folder (`webkitdirectory`) + pilih file utama bila ada beberapa `.scad` |
 | Add tool › From URL | `fetch` langsung (butuh CORS dari sumber; pesan jelas bila diblokir; GitHub/raw didukung) |
-| Hapus tool | Hanya tool impor; tool bawaan bisa "direset" |
+| Hapus tool | Hanya tool impor (konfirmasi lewat modal); tool bawaan tidak bisa dihapus |
 | Render (worker Node) | Web Worker, WASM dikompilasi sekali, **render usang dibatalkan** saat parameter berubah |
 | Ekspor (dialog simpan) | **File System Access API** (Chrome/Edge: dialog simpan asli) atau unduhan biasa (Firefox/Safari) |
 | Ekspor per plate | Satu **file .zip** berisi semua plate (browser memblokir banyak unduhan sekaligus) |
@@ -86,8 +86,8 @@ Browser
 | Font sistem | **Font bawaan Liberation** (Sans/Serif/Mono, metrik setara Arial/Times/Courier) + **62 font Google Fonts lewat link** (§14) + alias `Arial → Liberation Sans`, `Segoe Script → Dancing Script`, `Comic Sans MS → Comic Neue`, `Impact → Anton` dsb. Font perangkat (Local Font Access API) masih opsi M3. |
 | Ikon/gambar parameter, trace, relief | Sama (trace = vtracer WASM di Web Worker); file **hanya di memori tab**, hilang saat halaman ditutup/refresh (§15) |
 | Icon pack (folder) | Tombol **"Add icon folder…"** memilih folder SVG; hanya untuk sesi itu (§15) |
-| Preset | `localStorage` (sama) |
-| Pengaturan | `localStorage`; bagian folder ekspor dihilangkan |
+| Preset | Memori tab saja (§15) |
+| Pengaturan | Memori tab saja (§15); bagian folder ekspor dihilangkan |
 | Judul aplikasi | Tetap bisa diubah (judul tab) |
 
 ---
@@ -323,5 +323,16 @@ Prinsip: **web tidak menyimpan data unggahan.** Gambar, ikon, hasil trace, relie
   immutable) diunduh hanya saat pertama kali trace; glue diubah ke ESM oleh `fetch-assets.mjs`; `image-trace.cjs` ikut
   disinkron. Berjalan di Web Worker, batas 60 s.
 - **Icon pack:** folder yang dipilih → pack per sub-folder; yang disimpan hanya handle `File`, isi dibaca saat ikon ditampilkan.
-- **Preset dan pengaturan juga sementara** (sejak [008]): disimpan di memori (`session-store.js`, `settings.js`), bukan localStorage. Saat mulai, kunci lama `bonastudio:*`/`formforge:*` dari build sebelumnya dihapus. Hasilnya: web **tidak menyimpan apa pun** di browser (localStorage, sessionStorage, IndexedDB, Cache Storage kosong).
+- **Preset dan pengaturan juga sementara** (sejak [008]): disimpan di memori (`session-store.js`, `settings.js`), bukan localStorage. Saat mulai, kunci lama `bonastudio:*`/`formforge:*` dari build sebelumnya dihapus. Hasilnya: web **tidak menyimpan data pengguna** di browser (localStorage, sessionStorage, IndexedDB kosong). Sejak §16 Cache Storage berisi **file aplikasi** untuk offline, tidak pernah data pengguna.
+
+## 16. Unduhan, ponsel, PWA, galeri, impor tool (2026-11-07, `imple/011`)
+
+Keputusan pengguna: tool impor **hanya sesi**; **PWA penuh + offline** (Cache Storage hanya file aplikasi).
+
+- **Unduhan tanpa dialog simpan (Firefox, Safari).** Ekspor merender dulu, sering lebih lama dari masa berlaku gestur klik; Safari memblokir unduhan dari skrip setelahnya. `export.js` memakai `navigator.userActivation.isActive`: gestur masih aktif → unduhan otomatis; sudah habis → modal *Your file is ready* dengan tombol **Download** (tautan `<a download>`, klik baru). URL blob dicabut 60 s setelah modal ditutup. Tombol ekspor menulis "Preparing…" (bukan "Choose a location…") bila tidak ada dialog simpan.
+- **Impor tool (sesi).** `src/platform/session-tools.js`: SCAD file, Project folder (`webkitdirectory`; lebih dari satu `.scad` → modal *Choose the main file*, usulan = parameter terbanyak), From URL, seret & lepas `.scad`/folder ke jendela (`src/web/drop-import.js`). Batas sama dengan desktop (SCAD 10 MB, proyek 150 MB / 5.000 file, lewati dotfile & `node_modules`) + total sesi 300 MB. Tata letak file = desktop (`model.scad` atau `project/<rel>`); aset `user-assets/` ditaruh di samping file entry. `import()`/`surface()` ke file yang tidak ada → galat yang menyarankan Project folder. Hapus tool & parameter kustom (juga untuk tool bawaan) hanya untuk sesi.
+- **Impor URL.** HTTPS saja, tanpa kredensial, host lokal/IP privat literal ditolak (browser tidak bisa cek DNS), `credentials: 'omit'`, batas 10 MB saat streaming, timeout 15 s. Tautan halaman file GitHub/GitLab/Codeberg diubah ke raw. Butuh CORS dari sumber; bila diblokir, pesan menyarankan unduh lalu "SCAD file". CSP `connect-src` kini `'self' https:` (§7).
+- **Ponsel/tablet (< 900 px).** `src/web.css`: `min-width` desktop dilepas, tinggi `100dvh`. Potret: sidebar menjadi *bottom sheet* 62 dvh dari tombol **Parameters** di topbar; viewport menyusut di atasnya agar model tetap terlihat. Lanskap pendek: panel dari kiri. Modal = sheet dari bawah, toolbar viewport digeser menyamping, target sentuh 36 px, safe-area iOS.
+- **Galeri.** Modal *Tool library* saat mulai dan dari tombol **Browse**; kartu = gambar, nama, deskripsi (kalimat pertama komentar pembuka `.scad`, `src/platform/describe.js`), sumber, jumlah parameter; pencarian; tutup tanpa memilih → tool pertama. Gambar `public/gallery/<id>.webp` dibuat `npm run thumbnails` (Chrome lokal lewat CDP terhadap `vite preview`, lalu `build-library` mengisi `thumbnail`). Jalankan ulang setelah contoh berubah.
+- **PWA.** `public/manifest.webmanifest` + ikon PNG (192, 512, maskable, apple-touch 180). Service worker dibuat saat build (`scripts/service-worker.mjs` + `service-worker.template.js`, tanpa dependensi): precache shell, pustaka, galeri, WASM OpenSCAD; font & vtracer di-cache saat dipakai (yang sudah dimuat sebelum worker aktif diserahkan lewat pesan `cache-urls`). Versi = hash isi file. Pendaftaran setelah mesin siap (WASM diambil dari cache HTTP, tidak diunduh dua kali). Pembaruan: banner "A new version… Reload" (memperingatkan data sesi hilang), tidak diam-diam. Tombol **Install** muncul saat `beforeinstallprompt`. `vercel.json`: `/sw.js` dan manifest `no-cache`.
 

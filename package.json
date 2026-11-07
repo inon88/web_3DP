@@ -12,6 +12,7 @@
     "assets": "node scripts/fetch-assets.mjs",
     "library": "node scripts/build-library.mjs",
     "google-fonts": "node scripts/google-fonts.mjs",
+    "thumbnails": "node scripts/gallery-thumbnails.mjs",
     "prepare-all": "npm run sync && npm run assets && npm run library",
     "dev": "vite",
     "build": "vite build",

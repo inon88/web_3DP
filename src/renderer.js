@@ -16,6 +16,8 @@ import { resolveFontAlias } from './platform/fonts.js';
 import { createHistory } from './web/history.js';
 import { sessionStore } from './platform/session-store.js';
 import { engineEvents } from './platform/engine.js';
+import { droppedEntries, hasDroppedFiles } from './web/drop-import.js';
+import { galleryMarkup, bindGallery } from './web/gallery.js';
 
 const $ = selector => document.querySelector(selector);
 const ui = {
@@ -68,7 +70,9 @@ const ui = {
   activeObjectChip: $('#activeObjectChip'),
   activeObjectName: $('#activeObjectName'),
   transformHud: $('#transformHud'),
-  viewHelp: $('#viewHelp')
+  viewHelp: $('#viewHelp'),
+  sidebarOpenButton: $('#sidebarOpenButton'),
+  browseButton: $('#browseButton')
 };
 
 const DEFAULT_APP_TITLE = 'BonaStudio';
@@ -84,6 +88,7 @@ const state = {
   settings: null,
   version: '',
   platform: '',
+  saveDialog: true,     // WEB: false where exports are downloads (Firefox, Safari)
   openscadAvailable: false,
   localFonts: [],
   renderRevision: 0,
@@ -485,7 +490,8 @@ function renderPresetSelect(selectedId = '') {
 function toolSourceLabel(tool) {
   if (tool.kind === 'generator') return 'Built-in generator';
   if (tool.sourceUrl) return 'Imported from URL';
-  if (String(tool.entry || '').startsWith('project')) return 'Project folder';
+  if (tool.session && tool.category === 'Imported') return 'SCAD file · this session'; // WEB
+  if (String(tool.entry || '').startsWith('project')) return tool.session ? 'Project folder · this session' : 'Project folder';
   if (tool.category === 'Example') return 'Example tool';
   return 'SCAD file';
 }
@@ -1181,7 +1187,11 @@ function renderParameters() {
     ui.deleteToolButton.disabled = true;
     ui.addParameterButton.disabled = true;
   }
-  ui.deleteToolButton.title = isGeneratorTool(tool) ? 'The built-in Lithophane generator cannot be deleted' : 'Delete tool';
+  // WEB: only tools imported in this session can be deleted.
+  if (tool?.builtIn) ui.deleteToolButton.disabled = true;
+  ui.deleteToolButton.title = isGeneratorTool(tool) ? 'The built-in Lithophane generator cannot be deleted'
+    : tool?.builtIn ? 'Built-in tools cannot be deleted' : 'Delete tool';
+  ui.deleteToolButton.setAttribute('aria-label', ui.deleteToolButton.title);
   if (!tool) {
     ui.parameterCount.textContent = '0';
     ui.parameterList.innerHTML = '<div class="empty-parameters">Add a tool to start adjusting parameters. A tool is one OpenSCAD model — a single <b>.scad</b> file, a project folder, or a link.</div>';
@@ -2148,7 +2158,11 @@ function switchTool(toolId, force = false) {
   return true;
 }
 
+// WEB: run once when the open dialog closes (the start-up gallery picks a tool if none was chosen).
+let modalCloseHandler = null;
+
 function openModal(title, subtitle, body, className = '') {
+  modalCloseHandler = null;
   ui.modal.className = `modal ${className}`.trim();
   ui.modal.innerHTML = `
     <div class="modal-header">
@@ -2163,7 +2177,51 @@ function openModal(title, subtitle, body, className = '') {
 function closeModal() {
   ui.modalLayer.hidden = true;
   ui.modal.innerHTML = '';
+  const handler = modalCloseHandler;
+  modalCloseHandler = null;
+  handler?.();
 }
+
+// WEB: the tool gallery (rancangan.md §5). At start-up, closing it without a choice opens the first tool.
+function openGalleryModal(startup = false) {
+  const tools = [generatorTool(), ...scadTools()].filter(Boolean);
+  const fallback = () => {
+    if (!state.activeToolId) switchTool(scadTools()[0]?.id || generatorTool()?.id || '', true);
+  };
+  openModal('Tool library', startup
+    ? 'Choose a model to customize. Everything renders on this device; nothing is uploaded.'
+    : `${tools.length} tools · imported tools stay until you close or reload the page`,
+  galleryMarkup(tools, { activeId: state.activeToolId, sourceLabel: toolSourceLabel }), 'modal-gallery');
+  bindGallery(ui.modal, {
+    onChoose: toolId => {
+      modalCloseHandler = null;
+      closeModal();
+      if (toolId !== state.activeToolId) switchTool(toolId, !state.activeToolId);
+      setSidebarOpen(false);
+    },
+    onAdd: () => {
+      openAddToolModal();
+      if (startup) modalCloseHandler = fallback;
+    }
+  });
+  if (startup) modalCloseHandler = fallback;
+  // Focus a card rather than the search box, so phones do not open the keyboard.
+  (ui.modal.querySelector('.gallery-card.is-active') || ui.modal.querySelector('.gallery-card'))?.focus({ preventScroll: true });
+}
+
+// WEB: below 900 px the sidebar is a panel (a bottom sheet in portrait) opened from the top bar.
+const narrowLayout = window.matchMedia('(max-width: 900px)');
+function setSidebarOpen(open) {
+  const isOpen = open && narrowLayout.matches;
+  ui.appShell.classList.toggle('sidebar-open', isOpen);
+  ui.sidebarOpenButton.setAttribute('aria-expanded', String(isOpen));
+}
+narrowLayout.addEventListener('change', () => {
+  setSidebarOpen(false);
+  if (narrowLayout.matches) ui.appShell.classList.remove('sidebar-collapsed');
+});
+ui.sidebarOpenButton.addEventListener('click', () => setSidebarOpen(!ui.appShell.classList.contains('sidebar-open')));
+ui.browseButton.addEventListener('click', () => openGalleryModal());
 
 function showModalError(containerId, message) {
   const container = ui.modal.querySelector(`#${containerId}`);
@@ -2252,14 +2310,15 @@ function onToolAdded(result, message) {
 }
 
 function openAddToolModal() {
-  openModal('Add tool', 'Each tool is one OpenSCAD model. BonaStudio stores a copy in your local library; the original files are never changed.', `
+  // WEB: imported tools stay in this tab only; the files are read, never uploaded.
+  openModal('Add tool', 'Each tool is one OpenSCAD model. It stays in this tab until you close or reload the page; nothing is uploaded. You can also drop a .scad file or folder onto the window.', `
     <div class="choice-grid">${ADD_TOOL_SOURCES.map(source => `<button class="choice-card" type="button" data-add-source="${source.id}">
         <span class="choice-icon"><svg viewBox="0 0 24 24">${source.icon}</svg></span>
         <strong>${source.title}</strong><small>${source.description}</small>
       </button>`).join('')}</div>
     <form id="urlImportForm" class="url-import-form" hidden>
       <label class="modal-field"><span>SCAD file URL</span><input id="scadUrl" class="modal-input" type="url" placeholder="https://example.com/model.scad" required></label>
-      <p class="modal-help">Use a trusted source. The link must point directly to a .scad file of 10 MB or less on a public HTTPS host.</p>
+      <p class="modal-help">Use a trusted source. The link must point to a .scad file of 10 MB or less on a public HTTPS host that allows downloads from other sites (GitHub, GitLab and Codeberg file links work).</p>
       <div id="addToolError"></div>
       <div class="modal-actions"><button class="button button-secondary" type="button" data-close>Cancel</button><button id="urlImportSubmit" class="button button-primary" type="submit">Import</button></div>
     </form>
@@ -2278,7 +2337,8 @@ function openAddToolModal() {
     button.disabled = true;
     try {
       const result = source === 'project' ? await window.formforge.importProject() : await window.formforge.importFile();
-      if (onToolAdded(result, `"${result?.tool.name}" added to the library.`)) closeModal();
+      if (result?.chooseEntry) openEntryChooser(result.chooseEntry); // WEB: several .scad files in the folder
+      else if (onToolAdded(result, `"${result?.tool.name}" added for this session.`)) closeModal();
     } catch (error) {
       showModalError('addToolFileError', error.message || 'Could not import the tool.');
     } finally {
@@ -2293,13 +2353,88 @@ function openAddToolModal() {
     button.textContent = 'Importing…';
     try {
       const result = await window.formforge.importUrl($('#scadUrl').value.trim());
-      if (onToolAdded(result, `"${result?.tool.name}" added to the library.`)) closeModal();
+      if (onToolAdded(result, `"${result?.tool.name}" added for this session.`)) closeModal();
     } catch (error) {
       button.disabled = false;
       button.textContent = 'Import';
       showModalError('addToolError', error.message || 'Could not import the file.');
     }
   });
+}
+
+// WEB: a project folder with several .scad files; the desktop asks with a second file dialog.
+function openEntryChooser({ token, folder, candidates, suggested }) {
+  const parameterCount = count => (count === 1 ? '1 parameter' : `${count} parameters`);
+  openModal('Choose the main file', `"${folder}" has ${candidates.length} SCAD files. Which one is the model?`, `
+    <div class="entry-list" role="radiogroup" aria-label="Main SCAD file">${candidates.map(file => `
+      <label class="entry-option"><input type="radio" name="entryFile" value="${escapeHtml(file.path)}" ${file.path === suggested ? 'checked' : ''}>
+        <span><strong>${escapeHtml(file.path)}</strong><small>${parameterCount(file.parameters)}${file.path === suggested ? ' · suggested' : ''}</small></span></label>`).join('')}
+    </div>
+    <div id="entryError"></div>
+    <div class="modal-actions"><button class="button button-secondary" type="button" data-close>Cancel</button><button id="entryConfirm" class="button button-primary" type="button">Add tool</button></div>`, 'modal-wide');
+  $('#entryConfirm').addEventListener('click', async () => {
+    const entry = ui.modal.querySelector('input[name="entryFile"]:checked')?.value;
+    if (!entry) return;
+    try {
+      const result = await window.formforge.importProjectEntry(token, entry);
+      if (onToolAdded(result, `"${result.tool.name}" added for this session.`)) closeModal();
+    } catch (error) {
+      showModalError('entryError', error.message || 'Could not import the folder.');
+    }
+  });
+}
+
+// WEB: drop a .scad file or a project folder anywhere on the window.
+let dragDepth = 0;
+const setDropTarget = active => document.body.classList.toggle('is-drop-target', active);
+window.addEventListener('dragenter', event => {
+  if (!hasDroppedFiles(event)) return;
+  event.preventDefault();
+  dragDepth++;
+  setDropTarget(true);
+});
+window.addEventListener('dragover', event => {
+  if (!hasDroppedFiles(event)) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'copy';
+});
+window.addEventListener('dragleave', () => {
+  dragDepth = Math.max(0, dragDepth - 1);
+  if (!dragDepth) setDropTarget(false);
+});
+window.addEventListener('drop', async event => {
+  if (!hasDroppedFiles(event)) return;
+  event.preventDefault();
+  dragDepth = 0;
+  setDropTarget(false);
+  try {
+    // Read the entries before the first await: the browser clears them after the event.
+    const entries = droppedEntries(event.dataTransfer);
+    const result = await window.formforge.importDropped(await entries);
+    if (result?.chooseEntry) openEntryChooser(result.chooseEntry);
+    else if (onToolAdded(result, `"${result?.tool.name}" added for this session.`) && !ui.modalLayer.hidden) closeModal();
+  } catch (error) {
+    toast(error.message || 'Could not import the dropped files.', true);
+  }
+});
+
+// WEB: the export rendered for longer than the click that asked for it counts as a user gesture,
+// so the browser needs a fresh click to start the download.
+function openDownloadReady(download) {
+  const size = download.size >= 1024 * 1024 ? `${(download.size / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(download.size / 1024))} KB`;
+  openModal('Your file is ready', `${download.name} · ${size}`, `
+    <p class="modal-help">Rendering took a moment, so your browser needs one more click to save the file.</p>
+    <div class="modal-actions"><button class="button button-secondary" type="button" data-close>Close</button><a id="downloadReady" class="button button-primary" href="${escapeHtml(download.url)}" download="${escapeHtml(download.name)}">Download</a></div>`);
+  $('#downloadReady').focus();
+  $('#downloadReady').addEventListener('click', () => setTimeout(closeModal, 0));
+  // The file stays available until this dialog closes (and a minute longer for slow downloads).
+  const observer = new MutationObserver(() => {
+    if (ui.modal.contains(document.getElementById('downloadReady'))) return;
+    observer.disconnect();
+    setTimeout(() => URL.revokeObjectURL(download.url), 60000);
+  });
+  observer.observe(ui.modal, { childList: true });
+  setStatus(`${download.name} is ready · click Download to save it`);
 }
 
 function openSettings() {
@@ -2449,7 +2584,7 @@ function openExportModal() {
     const button = $('#confirmExport');
     const closeButtons = [...ui.modal.querySelectorAll('[data-close]')];
     button.disabled = true;
-    button.textContent = 'Choose a location…';
+    button.textContent = state.saveDialog ? 'Choose a location…' : 'Preparing…'; // WEB: downloads have no dialog
     // The save dialog opens first; the elapsed counter then reflects the render itself.
     const startedAt = performance.now();
     let progress = null;
@@ -2474,6 +2609,8 @@ function openExportModal() {
       state.settings.exportDirectory = result.filePath.replace(/[\\/][^\\/]+$/, '');
       updateAppStatus();
       closeModal();
+      // WEB: the render outlasted the click, so the browser needs a new one to start the download.
+      if (result.download) openDownloadReady(result.download);
       const size = result.bytes >= 1024 * 1024 ? `${(result.bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(result.bytes / 1024))} KB`;
       const where = result.files?.length > 1
         ? `${result.files.length} files · ${result.files.map(file => file.filePath.split(/[\\/]/).pop()).join(', ')}`
@@ -2825,9 +2962,20 @@ ui.parameterList.addEventListener('click', async event => {
   }
 });
 
-async function deleteActiveTool() {
+// WEB: the desktop confirms in main.cjs with a native dialog; here a modal asks first.
+function deleteActiveTool() {
   const tool = activeTool();
-  if (!tool) return;
+  if (!tool || ui.deleteToolButton.disabled) return;
+  openModal('Delete tool?', `Delete "${tool.name}" from this session?`, `
+    <p class="modal-help">Only the copy in this tab is removed. Your original files are not changed.</p>
+    <div class="modal-actions"><button class="button button-secondary" type="button" data-close>Cancel</button><button id="confirmDeleteTool" class="button button-danger" type="button">Delete tool</button></div>`);
+  $('#confirmDeleteTool').addEventListener('click', () => {
+    closeModal();
+    removeTool(tool);
+  });
+}
+
+async function removeTool(tool) {
   try {
     const result = await window.formforge.deleteTool(tool.id);
     state.tools = result.tools;
@@ -2835,8 +2983,8 @@ async function deleteActiveTool() {
     sessionStore.remove(presetStorageKey(tool));
     refreshToolSelect();
     switchTool(scadTools()[0]?.id || generatorTool()?.id || '', true);
-    setStatus(`"${tool.name}" removed from the library`);
-    toast(`"${tool.name}" removed from the library.`);
+    setStatus(`"${tool.name}" removed from this session`);
+    toast(`"${tool.name}" removed from this session.`);
   } catch (error) {
     toast(error.message || 'Could not delete the tool.', true);
   }
@@ -2925,6 +3073,10 @@ ui.viewportNotice.addEventListener('click', event => {
 });
 document.querySelectorAll('.view-tab').forEach(tab => tab.addEventListener('click', () => setCameraView(tab.dataset.view)));
 $('#sidebarCollapseButton').addEventListener('click', event => {
+  if (narrowLayout.matches) {
+    setSidebarOpen(false); // WEB: the panel closes; collapsing is for wide screens
+    return;
+  }
   const collapsed = ui.appShell.classList.toggle('sidebar-collapsed');
   event.currentTarget.setAttribute('aria-expanded', String(!collapsed));
   event.currentTarget.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
@@ -2962,11 +3114,13 @@ async function initialize() {
     state.settings = initial.settings;
     state.version = initial.version || '';
     state.platform = initial.platform || '';
+    state.saveDialog = initial.saveDialog !== false;
     state.openscadAvailable = initial.openscadAvailable;
     updatePlates();
     updateAppStatus();
     refreshToolSelect();
-    switchTool(scadTools()[0]?.id || generatorTool()?.id || '', true);
+    // WEB: start in the gallery; closing it opens the first tool.
+    openGalleryModal(true);
     setStatus('Everything renders on this device · nothing is uploaded or saved');
     resizeViewport();
   } catch (error) {

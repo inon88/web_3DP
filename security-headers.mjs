@@ -7,7 +7,9 @@
 export const GOOGLE_FONT_ORIGIN = 'https://fonts.gstatic.com';
 
 export function contentSecurityPolicy({ assetOrigin = '', dev = false } = {}) {
-  const connect = ["'self'", GOOGLE_FONT_ORIGIN, assetOrigin, dev && 'ws:'].filter(Boolean).join(' ');
+  // https: lets people import a tool from a link (rancangan.md §7, §16). It covers the font host and an
+  // asset CDN too; those stay listed so the policy still names them if imports are ever narrowed.
+  const connect = ["'self'", 'https:', GOOGLE_FONT_ORIGIN, assetOrigin, dev && 'ws:'].filter(Boolean).join(' ');
   return [
     "default-src 'self'",
     "script-src 'self' 'wasm-unsafe-eval'",

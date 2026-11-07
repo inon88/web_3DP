@@ -6,9 +6,10 @@ import { BUNDLED_FONTS } from './fonts.js';
 import { readSettings, writeSettings } from './settings.js';
 import { prepareRenderJob } from './render-job.js';
 import { render, loadEngine, RenderTimeoutError } from './engine.js';
-import { chooseTarget, writeTarget, sanitizeName } from './export.js';
+import { chooseTarget, writeTarget, sanitizeName, hasSaveDialog } from './export.js';
 import { pickFiles } from './file-picker.js';
-import { addToolAsset, addIconFiles, iconIndex, readIcon } from './session-files.js';
+import { addToolAsset, addIconFiles, iconIndex, readIcon, forgetToolAssets } from './session-files.js';
+import { importScadFile, readProjectFolder, suggestEntry, importProject, importUrl as importFromUrl, isSessionTool, deleteSessionTool, addCustomParameter } from './session-tools.js';
 import { traceImage } from './trace.js';
 import { validateHeightmapPng, LITHOPHANE_LIMITS } from '../shared/heightmap.js';
 import { LITHOPHANE_IMAGE_PARAMETER } from '../shared/lithophane.js';
@@ -59,9 +60,18 @@ async function renderExport(toolId, values, format) {
 }
 
 const exportListeners = new Set();
-const notAvailable = feature => async () => {
-  throw new Error(`${feature} is not available in the web version yet.`);
-};
+
+const toolResult = async tool => ({ tool, tools: await loadLibrary() });
+const pendingProjects = new Map(); // token → project folder waiting for its main file
+
+async function startProjectImport(entries) {
+  const project = await readProjectFolder(entries);
+  if (project.scadFiles.length === 1) return toolResult(importProject(project, project.scadFiles[0].path));
+  const token = crypto.randomUUID();
+  pendingProjects.clear(); // only the latest folder can still be finished
+  pendingProjects.set(token, project);
+  return { chooseEntry: { token, folder: project.name, candidates: project.scadFiles, suggested: suggestEntry(project) } };
+}
 
 export const formforge = {
   async initialState() {
@@ -71,7 +81,9 @@ export const formforge = {
       openscadAvailable: true,
       desktop: '',
       version: __APP_VERSION__,
-      platform: 'web'
+      platform: 'web',
+      // WEB: false in Firefox/Safari, where exports are downloads instead of a native save dialog.
+      saveDialog: hasSaveDialog()
     };
   },
   async listFonts() {
@@ -122,8 +134,8 @@ export const formforge = {
     if (!perPlate) {
       const rendered = await renderExport(toolId, values, format);
       const output = finish(rendered);
-      await writeTarget(target, output, mime);
-      return { canceled: false, filePath: target.name, quality: rendered.quality, bytes: output.byteLength };
+      const { download } = await writeTarget(target, output, mime);
+      return { canceled: false, filePath: target.name, quality: rendered.quality, bytes: output.byteLength, download };
     }
     const { zipSync } = await import('fflate');
     const entries = {};
@@ -142,8 +154,8 @@ export const formforge = {
       files.push({ filePath: name, bytes: output.byteLength });
     }
     const zip = zipSync(entries);
-    await writeTarget(target, zip, 'application/zip');
-    return { canceled: false, files, filePath: target.name, quality, bytes: zip.byteLength };
+    const { download } = await writeTarget(target, zip, 'application/zip');
+    return { canceled: false, files, filePath: target.name, quality, bytes: zip.byteLength, download };
   },
   onExportProgress(callback) {
     exportListeners.add(callback);
@@ -212,12 +224,53 @@ export const formforge = {
     return { added: addIconFiles(files) };
   },
 
-  // Arrive in M3 (rancangan.md §9).
-  importFile: notAvailable('Importing tools'),
-  importProject: notAvailable('Importing project folders'),
-  importUrl: notAvailable('Importing from a link'),
-  deleteTool: notAvailable('Deleting built-in tools'),
-  addParameter: notAvailable('Custom parameters')
+  // Importing tools (tools:import-* in the desktop main.cjs). Imported tools stay in this tab's memory only.
+  async importFile() {
+    const [file] = await pickFiles({ accept: '.scad' });
+    if (!file) return null;
+    return toolResult(await importScadFile(file));
+  },
+  // A folder with one .scad file is imported right away. With several, the result asks the renderer to
+  // let the person choose the main file: { chooseEntry: { token, folder, candidates, suggested } }, then
+  // importProjectEntry(token, path) finishes the import.
+  async importProject() {
+    const files = await pickFiles({ directory: true });
+    if (!files.length) return null;
+    return startProjectImport(files.map(file => ({ path: file.webkitRelativePath || file.name, file })));
+  },
+  async importProjectEntry(token, entry) {
+    const project = pendingProjects.get(token);
+    if (!project) throw new Error('The selected folder is no longer available. Choose it again.');
+    const tool = importProject(project, entry);
+    pendingProjects.delete(token);
+    return toolResult(tool);
+  },
+  // Files or a folder dropped onto the window: entries [{ path, file }] (src/web/drop-import.js).
+  async importDropped(entries) {
+    if (!Array.isArray(entries) || !entries.length) return null;
+    const scad = entries.filter(entry => /\.scad$/i.test(entry.file?.name || ''));
+    if (!scad.length) throw new Error('Drop an OpenSCAD file (.scad) or a project folder.');
+    const single = entries.length === 1 && !String(entries[0].path).includes('/');
+    if (single) return toolResult(await importScadFile(entries[0].file));
+    return startProjectImport(entries);
+  },
+  async importUrl(url) {
+    return toolResult(await importFromUrl(url));
+  },
+  async deleteTool(toolId) {
+    const tool = await getTool(toolId);
+    if (isGeneratorTool(tool)) throw new Error('The built-in Lithophane generator cannot be deleted.');
+    if (!isSessionTool(toolId)) throw new Error('Built-in tools cannot be deleted.');
+    deleteSessionTool(toolId);
+    forgetToolAssets(toolId);
+    previewStats.delete(toolId);
+    return { deleted: true, tools: await loadLibrary() };
+  },
+  // Kept for this session; applies to built-in tools too, like the desktop.
+  async addParameter(toolId, parameter) {
+    addCustomParameter(await getTool(toolId), parameter);
+    return toolResult(await getTool(toolId));
+  }
 };
 
 // Start downloading the engine once the page is idle, so the first render does not wait for it.

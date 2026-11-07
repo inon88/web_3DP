@@ -8,12 +8,17 @@ import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { parseParameters, PARAMETER_PARSER_VERSION } from '../src/shared/parameters.js';
 import { referencedAssetPaths } from '../src/shared/scad-assets.js';
+import { scadDescription } from '../src/platform/describe.js';
 
 const WEB = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const EXAMPLES = path.resolve(WEB, '..', 'examples');
 const OUTPUT = path.join(WEB, 'public', 'library');
+// Gallery pictures (scripts/gallery-thumbnails.mjs); kept outside public/library, which is rebuilt here.
+const GALLERY = path.join(WEB, 'public', 'gallery');
 const MAX_TOOL_BYTES = 20 * 1024 * 1024;
 // Friendlier names for files whose names are terse; everything else is derived from the file name.
+// Gallery text for files that start without a describing comment.
+const DESCRIPTIONS = { 'bracket': 'L-shaped mounting bracket with optional screw holes.', 'pet-bowl': 'Pet bowl with a name and two icons on the front, raised or engraved.' };
 const NAMES = { 'bracket': 'Mounting bracket', 'c_keycaps': 'Keycaps', 'c_hex_tray': 'Hex tray', 'c_tray_organizer': 'Tray organizer', 'C_keychain': 'Keychain', 'c_decorativeLatter': 'Decorative letter' };
 
 const slug = text => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -46,10 +51,13 @@ async function buildTool(id, name, sourceDirectory, entry, files) {
     listed.push({ path: file, bytes: data.length });
   }
   if (bytes > MAX_TOOL_BYTES) throw new Error(`${id} is larger than ${MAX_TOOL_BYTES / 1024 / 1024} MB.`);
+  const thumbnail = await fs.access(path.join(GALLERY, id + '.webp')).then(() => `/gallery/${id}.webp`, () => '');
   return {
     id,
     name,
     category: 'Example',
+    description: DESCRIPTIONS[id] || scadDescription(source),
+    thumbnail,
     entry,
     builtIn: true,
     // Changes whenever any file changes; render caches key on it.

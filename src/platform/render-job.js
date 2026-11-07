@@ -5,6 +5,7 @@ import { exportsSeparateObjects } from '../shared/scad-assets.js';
 import { getTool, toolFiles, toolSource } from './library.js';
 import { findFont } from './fonts.js';
 import { referencedToolAssets } from './session-files.js';
+import { missingReferencedFiles } from './session-tools.js';
 
 export function validateNestedTree(value, maxDepth, label, icons = NESTED_TREE_ICONS) {
   if (!Array.isArray(value) || value.length < 1 || value.length > 200) throw new Error(label + ' must contain between 1 and 200 elements.');
@@ -86,6 +87,12 @@ export function validateParameterValues(tool, values) {
 export async function prepareRenderJob(toolId, values) {
   const tool = await getTool(toolId);
   const source = await toolSource(tool);
+  const missing = missingReferencedFiles(tool, source);
+  if (missing.length) {
+    const single = !String(tool.entry).startsWith('project/');
+    throw new Error(`Required file(s) ${missing.map(file => `"${file}"`).join(', ')} could not be found.`
+      + (single ? ' This model uses other files: add its whole folder with "Project folder" instead of a single SCAD file.' : ''));
+  }
   const { params, nestedParameterOverrides, nestedFontNames } = validateParameterValues(tool, values);
 
   // Font parameters are rewritten to the bundled font's exact name, so fontconfig finds it.
@@ -106,12 +113,14 @@ export async function prepareRenderJob(toolId, values) {
     renameFonts(element[12]);
   });
   for (const encoded of Object.values(nestedParameterOverrides)) renameFonts(encoded);
+  const entryFolder = tool.entry.includes('/') ? tool.entry.slice(0, tool.entry.lastIndexOf('/') + 1) : '';
 
   return {
     tool,
     entry: tool.entry,
     // Images added in this session (icons, traced images, reliefs) sit next to the tool's own files.
-    files: [...await toolFiles(tool), ...referencedToolAssets(tool.id, params)],
+    // (the desktop keeps them in user-assets/ beside the entry file, also for project folders).
+    files: [...await toolFiles(tool), ...referencedToolAssets(tool.id, params).map(file => ({ ...file, path: entryFolder + file.path }))],
     params,
     nestedParameterOverrides,
     fonts: [...fonts.values()],

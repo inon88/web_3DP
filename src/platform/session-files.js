@@ -24,6 +24,12 @@ export function addToolAsset(toolId, extension, bytes) {
   return reference;
 }
 
+// Called when an imported tool is deleted.
+export function forgetToolAssets(toolId) {
+  for (const bytes of toolAssets.get(toolId)?.values() || []) assetBytes -= bytes.length;
+  toolAssets.delete(toolId);
+}
+
 // Every user-assets reference inside the values (strings, nested trees), as files for the render.
 export function referencedToolAssets(toolId, values) {
   const references = new Set(JSON.stringify(values ?? null).match(USER_ASSET_PATTERN) || []);

@@ -1,6 +1,139 @@
-/* Web-only adjustments on top of the shared styles.css. */
+/* Web-only adjustments on top of the shared styles.css. Colors only through the tokens in styles.css. */
 
-/* Desktop features that arrive later on the web (M3: import, delete, custom parameters, export folder). */
+/* Desktop features the web version does not have (export folder). */
 .web-unavailable {
   display: none !important;
+}
+
+/* The desktop window has a minimum size; a browser tab can be any size (phones, below). */
+html, body { min-width: 0; height: 100%; height: 100dvh; }
+.sidebar-open-button { display: none; }
+.tool-actions .button-secondary svg { width: 15px; height: 15px; }
+
+/* ---------- Gallery ---------- */
+.modal.modal-gallery { width: min(1040px, 100%); max-height: min(880px, 94vh); }
+.gallery-toolbar { position: sticky; z-index: 1; top: -22px; display: flex; align-items: center; gap: 10px; margin: -4px -22px 14px; padding: 4px 22px 12px; background: var(--surface); }
+.gallery-search { display: flex; min-width: 0; flex: 1; height: 36px; align-items: center; gap: 8px; padding: 0 12px; color: var(--muted); background: var(--surface-soft); border: 1px solid var(--line-strong); border-radius: var(--radius); }
+.gallery-search:focus-within { border-color: var(--accent); box-shadow: var(--focus-ring); }
+.gallery-search svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.gallery-search input { min-width: 0; flex: 1; height: 100%; padding: 0; color: var(--ink); background: transparent; border: 0; outline: none; font-size: 14px; }
+.gallery-search input:focus-visible { box-shadow: none; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.gallery-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; padding: 0; text-align: left; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 10px; cursor: pointer; transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease; }
+.gallery-card:hover { border-color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-pop); }
+.gallery-card.is-active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+.gallery-picture { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--viewport-bg); border-bottom: 1px solid var(--line); }
+.gallery-picture img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.gallery-placeholder { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); }
+.gallery-placeholder svg { width: 44px; height: 44px; stroke-width: 1.4; }
+.gallery-text { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 4px; padding: 10px 12px 12px; }
+.gallery-text strong { font-size: 14px; line-height: 1.3; }
+.gallery-text small { display: -webkit-box; overflow: hidden; color: var(--muted-strong); font-size: 12px; line-height: 1.45; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.gallery-meta { margin-top: auto; padding-top: 4px; color: var(--muted); font-size: 11px; }
+.gallery-empty { margin: 24px 0; color: var(--muted); text-align: center; }
+
+/* ---------- Import ---------- */
+.entry-list { display: flex; max-height: 50vh; flex-direction: column; gap: 6px; overflow: auto; }
+.entry-option { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: var(--radius); cursor: pointer; }
+.entry-option:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.entry-option input { margin-top: 3px; accent-color: var(--accent); }
+.entry-option span { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.entry-option strong { overflow-wrap: anywhere; font-size: 13px; }
+.entry-option small { color: var(--muted); font-size: 12px; }
+a.button { text-decoration: none; }
+
+.drop-overlay { position: fixed; z-index: 30; inset: 0; display: none; place-items: center; padding: 24px; background: var(--overlay); backdrop-filter: blur(3px); pointer-events: none; }
+.drop-overlay > div { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 32px 40px; color: var(--ink); text-align: center; background: var(--surface); border: 2px dashed var(--accent); border-radius: 16px; box-shadow: var(--shadow-modal); }
+.drop-overlay svg { width: 32px; height: 32px; color: var(--accent); }
+.drop-overlay strong { font: 600 18px var(--font-display); }
+.drop-overlay span { color: var(--muted-strong); font-size: 13px; }
+body.is-drop-target .drop-overlay { display: grid; }
+
+/* ---------- PWA: new version banner ---------- */
+.update-banner { position: fixed; z-index: 45; left: 50%; bottom: 40px; display: flex; max-width: calc(100% - 32px); align-items: center; gap: 12px; padding: 10px 10px 10px 16px; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-lg); box-shadow: var(--shadow-pop); transform: translateX(-50%); font-size: 13px; animation: modal-in .16s ease-out; }
+.update-banner span { min-width: 0; }
+
+/* ---------- Narrow screens: tablets and phones ---------- */
+@media (max-width: 900px) {
+  .sidebar-open-button { display: inline-flex; flex: 0 0 auto; }
+  .app-shell { position: relative; }
+  /* Portrait: the sidebar is a bottom sheet over the lower part of the screen; the viewport above stays usable. */
+  .sidebar {
+    position: fixed; z-index: 15; right: 0; bottom: 0; left: 0;
+    width: auto; height: min(62dvh, 640px);
+    padding: 8px 14px calc(8px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--line-strong); border-right: 0; border-radius: 16px 16px 0 0;
+    box-shadow: var(--shadow-modal);
+    transform: translateY(105%); transition: transform .22s ease; visibility: hidden;
+  }
+  .app-shell.sidebar-open .sidebar { transform: none; visibility: visible; }
+  .sidebar::before { display: block; width: 40px; height: 4px; flex: 0 0 auto; margin: 0 auto 6px; background: var(--line-strong); border-radius: 99px; content: ''; }
+  .brand-row { height: 36px; margin-bottom: 8px; }
+  .brand-row .app-icon { width: 28px; height: 28px; }
+  .brand-caption { display: none; }
+  .sidebar-collapse svg { transform: rotate(-90deg); }
+  .sidebar-section, .parameter-section { min-height: auto; }
+  .sidebar { overflow-y: auto; overscroll-behavior: contain; }
+  .parameter-section { flex: 0 0 auto; }
+  .settings-link { flex: 0 0 auto; margin-top: 12px; }
+  .settings-link kbd { display: none; }
+  /* The open sheet covers the lower part: shrink the viewport so the model stays in view above it. */
+  .app-shell.sidebar-open .main-panel { padding-bottom: min(62dvh, 640px); }
+
+  .topbar { height: 52px; flex-basis: 52px; gap: 8px; padding: 0 10px; padding-top: env(safe-area-inset-top); box-sizing: content-box; }
+  .breadcrumb > span:first-child, .breadcrumb > svg { display: none; }
+  .breadcrumb strong { font-size: 15px; }
+  .category-chip { display: none; }
+  .topbar-actions { gap: 6px; }
+  .content-area { padding: 8px; }
+  .viewport-card { min-height: 0; }
+  /* The toolbar scrolls sideways instead of wrapping. */
+  .viewport-toolbar { overflow-x: auto; scrollbar-width: none; padding-right: 8px; }
+  .viewport-toolbar::-webkit-scrollbar { display: none; }
+  .view-tabs, .viewport-actions { flex: 0 0 auto; }
+  .viewport-footer { height: 30px; flex-basis: 30px; gap: 12px; padding: 0 10px; overflow: hidden; white-space: nowrap; }
+  .viewport-footer .footer-group:last-child { min-width: 0; overflow: hidden; }
+  .statusbar { padding: 0 10px calc(env(safe-area-inset-bottom)); height: calc(26px + env(safe-area-inset-bottom)); flex-basis: auto; }
+  .statusbar > div:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .statusbar #appVersion, .statusbar .statusbar-separator { display: none; }
+
+  /* Dialogs become sheets from the bottom. */
+  .modal-layer { align-items: end; padding: 0; }
+  .modal, .modal.modal-wide, .modal.modal-gallery { width: 100%; max-height: 92dvh; padding: 18px 16px calc(16px + env(safe-area-inset-bottom)); border-radius: 16px 16px 0 0; }
+  .gallery-toolbar { top: -18px; margin: -4px -16px 12px; padding: 4px 16px 10px; }
+  .toast-region { right: 12px; bottom: calc(36px + env(safe-area-inset-bottom)); left: 12px; align-items: stretch; }
+  .toast { min-width: 0; max-width: none; }
+  .update-banner { bottom: calc(36px + env(safe-area-inset-bottom)); }
+}
+
+@media (max-width: 600px) {
+  .status-pill { width: 28px; padding: 0; justify-content: center; font-size: 0; }
+  .topbar .button-primary { padding: 0 12px; }
+  #installButton { padding: 0 8px; font-size: 0; gap: 0; }
+  #installButton svg { width: 15px; height: 15px; }
+  .choice-grid, .choice-grid-2 { grid-template-columns: minmax(0, 1fr); }
+  .choice-card { min-height: 0; }
+  .gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .gallery-text { padding: 8px 10px 10px; }
+  .gallery-text small { display: none; }
+  .gallery-toolbar .button span, .gallery-toolbar .button { font-size: 0; gap: 0; }
+  .gallery-toolbar .button svg { width: 15px; height: 15px; }
+  .view-tab { padding: 0 8px; }
+  .footer-separator, .viewport-footer .footer-group:last-child > span:last-child { display: none; }
+}
+
+/* Landscape phones: too short for a bottom sheet, so the sidebar slides in from the left. */
+@media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+  .sidebar { top: 0; right: auto; width: min(360px, 48vw); height: auto; border-top: 0; border-right: 1px solid var(--line-strong); border-radius: 0 16px 16px 0; transform: translateX(-105%); padding-top: calc(12px + env(safe-area-inset-top)); padding-left: calc(14px + env(safe-area-inset-left)); }
+  .sidebar::before { display: none; }
+  .sidebar-collapse svg { transform: none; }
+  .app-shell.sidebar-open .main-panel { padding-bottom: 0; padding-left: min(360px, 48vw); }
+  .modal, .modal.modal-wide, .modal.modal-gallery { max-height: 96dvh; }
+}
+
+/* Touch screens: larger targets. */
+@media (pointer: coarse) {
+  .small-icon-button { width: 36px; height: 36px; }
+  .button-compact { height: 34px; }
+  input[type="range"] { height: 6px; }
 }

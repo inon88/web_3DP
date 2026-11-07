@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite';
 import { readFileSync } from 'node:fs';
 import { securityHeaders } from './security-headers.mjs';
+import { serviceWorker } from './scripts/service-worker.mjs';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
 
@@ -9,6 +10,7 @@ export default defineConfig(({ mode }) => {
   const assetOrigin = env.VITE_ASSET_BASE && /^https:\/\//.test(env.VITE_ASSET_BASE) ? new URL(env.VITE_ASSET_BASE).origin : '';
   return {
     define: { __APP_VERSION__: JSON.stringify(pkg.version) },
+    plugins: [serviceWorker()],
     server: { headers: securityHeaders({ assetOrigin, dev: true }) },
     preview: { headers: securityHeaders({ assetOrigin }) },
     worker: { format: 'es' },
